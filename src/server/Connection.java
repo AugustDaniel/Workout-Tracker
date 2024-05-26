@@ -6,16 +6,17 @@ import data.Workout;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Set;
 
 public class Connection implements Runnable {
 
     private Socket client;
-    private Set<Workout> workouts;
+    private List<Workout> workouts;
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    public Connection(Socket client, Set<Workout> workouts) {
+    public Connection(Socket client, List<Workout> workouts) {
         this.client = client;
         this.workouts = workouts;
 
