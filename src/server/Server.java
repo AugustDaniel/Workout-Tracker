@@ -17,7 +17,7 @@ public class Server {
         }
 
         ExecutorService service = Executors.newCachedThreadPool();
-        AtomicReference<WorkoutCatalogue> workoutCatalogue = new AtomicReference<>(new WorkoutCatalogue());
+        WorkoutCatalogue workoutCatalogue = new WorkoutCatalogue();
 
         while (true) {
             try {

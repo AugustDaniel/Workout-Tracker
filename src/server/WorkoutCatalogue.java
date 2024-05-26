@@ -9,7 +9,7 @@ import java.util.*;
 
 public class WorkoutCatalogue implements SubjectPattern, Serializable {
 
-    private final Set<Workout> workouts = new LinkedHashSet<>();
+    private final Set<Workout> workouts = Collections.synchronizedSet(new LinkedHashSet<>());
     private final List<ObserverPattern> observers = Collections.synchronizedList(new ArrayList<>());
 
     public void addWorkout(Workout workout) {
@@ -18,21 +18,21 @@ public class WorkoutCatalogue implements SubjectPattern, Serializable {
     }
 
     public Set<Workout> getWorkouts() {
-        return this.workouts;
+        return new LinkedHashSet<>(workouts);
     }
 
     @Override
-    public void addObserver(ObserverPattern observer) {
+    public synchronized void addObserver(ObserverPattern observer) {
         observers.add(observer);
     }
 
     @Override
-    public void removeObserver(ObserverPattern observer) {
+    public synchronized void removeObserver(ObserverPattern observer) {
         observers.remove(observer);
     }
 
     @Override
-    public void notifyObservers() {
+    public synchronized void notifyObservers() {
         observers.forEach(ObserverPattern::update);
     }
 }
