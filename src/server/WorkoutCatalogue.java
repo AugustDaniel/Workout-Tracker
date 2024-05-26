@@ -12,8 +12,9 @@ public class WorkoutCatalogue implements SubjectPattern, Serializable {
     private final Set<Workout> workouts = new LinkedHashSet<>();
     private final List<ObserverPattern> observers = Collections.synchronizedList(new ArrayList<>());
 
-    public boolean addWorkout(Workout workout) {
-        return this.workouts.add(workout);
+    public void addWorkout(Workout workout) {
+        this.workouts.add(workout);
+        notifyObservers();
     }
 
     public Set<Workout> getWorkouts() {

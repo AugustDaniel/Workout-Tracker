@@ -1,6 +1,5 @@
 package server;
 
-import data.Workout;
 
 import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
