@@ -1,67 +1,63 @@
 package server;
 
-import data.Workout;
-import util.ObserverPattern;
 
-import java.io.IOException;
+import data.Workout;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Set;
 
-public class Connection implements Runnable, ObserverPattern {
+public class Connection implements Runnable {
 
     private Socket client;
-    private final WorkoutCatalogue workoutCatalogue;
+    private Set<Workout> workouts;
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    public Connection(Socket client, WorkoutCatalogue workoutCatalogue) {
+    public Connection(Socket client, Set<Workout> workouts) {
         this.client = client;
-        this.workoutCatalogue = workoutCatalogue;
-        this.workoutCatalogue.addObserver(this);
-    }
+        this.workouts = workouts;
 
-    @Override
-    public void run() {
         try {
             this.input = new ObjectInputStream(this.client.getInputStream());
             this.output = new ObjectOutputStream(this.client.getOutputStream());
-
-            this.output.writeObject(this.workoutCatalogue.getWorkouts());
-            this.output.flush();
-
-            while (this.client.isConnected()) {
-                this.workoutCatalogue.addWorkout((Workout) input.readObject());
-            }
         } catch (Exception e) {
-            //todo
-        } finally {
             terminateConnection();
         }
     }
 
     @Override
-    public void update() {
+    public void run() {
         try {
-            sendWorkoutsToClient();
+            this.output.writeObject(this.workouts);
+            this.output.flush();
+
+            while (this.client.isConnected()) {
+                Workout workout = (Workout) this.input.readObject();
+                Server.addWorkout(workout);
+            }
         } catch (Exception e) {
-            //todo
+            terminateConnection();
         }
     }
 
-    private synchronized void sendWorkoutsToClient() throws IOException {
-        this.output.writeObject(this.workoutCatalogue.getWorkouts());
-        this.output.flush();
+    public void send(Workout workout) {
+        try {
+            this.workouts.add(workout);
+            this.output.writeObject(workout);
+            this.output.flush();
+        } catch (Exception e) {
+            terminateConnection();
+        }
     }
 
     private void terminateConnection() {
         try {
-            this.workoutCatalogue.removeObserver(this);
             if (input != null) input.close();
             if (output != null) output.close();
             if (client != null && !client.isClosed()) client.close();
         } catch (Exception e) {
-            // Log the exception
             e.printStackTrace();
         }
     }

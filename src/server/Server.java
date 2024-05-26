@@ -1,30 +1,45 @@
 package server;
 
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import data.Workout;
+
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 public class Server {
     private static ServerSocket serverSocket;
+    private final static List<Connection> connections = new ArrayList<>();
+    private final static Set<Workout> workouts = new LinkedHashSet<>();
 
     public static void main(String[] args) {
         try {
             serverSocket = new ServerSocket(8000);
         } catch (Exception e) {
-            System.out.println(e); //todo
+            e.printStackTrace();
         }
 
         ExecutorService service = Executors.newCachedThreadPool();
-        WorkoutCatalogue workoutCatalogue = new WorkoutCatalogue();
 
-        while (true) {
+        while (!serverSocket.isClosed()) {
             try {
-                service.execute(new Connection(serverSocket.accept(), workoutCatalogue));
+                Connection connection = new Connection(serverSocket.accept(), new LinkedHashSet<>(workouts));
+                connections.add(connection);
+                service.execute(connection);
             } catch (Exception e) {
-                System.out.println(e); //todo
+                e.printStackTrace();
             }
         }
+    }
+
+    public static void addWorkout(Workout workout) {
+        workouts.add(workout);
+        connections.forEach(c -> c.send(workout));
     }
 }
