@@ -181,7 +181,7 @@
                                                 <Insets left="10.0" top="10.0" />
                                             </HBox.margin>
                                         </Text>
-                              <Button fx:id="browse_refresh_button" mnemonicParsing="false" prefHeight="50.0" prefWidth="79.0" text="Refresh">
+                              <Button fx:id="browse_refresh_button" mnemonicParsing="false" prefHeight="50.0" prefWidth="79.0" text="Refresh" onAction="#handleRefreshButton">
                                  <HBox.margin>
                                     <Insets right="5.0" top="10.0" />
                                  </HBox.margin>

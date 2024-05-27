@@ -156,4 +156,9 @@ public class GuiController implements Initializable {
         browse_workouts_table.getItems().setAll(workouts);
         browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
     }
+
+    @FXML
+    public void handleRefreshButton() {
+        updateBrowseTab();
+    }
 }
