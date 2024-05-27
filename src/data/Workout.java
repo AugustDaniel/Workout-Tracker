@@ -20,4 +20,9 @@ public class Workout {
     public List<Exercise> getExcercises() {
         return excercises;
     }
+
+    @Override
+    public String toString() {
+        return name +" "+ excercises.size() +" exercises";
+    }
 }
