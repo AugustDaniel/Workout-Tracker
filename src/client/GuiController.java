@@ -1,6 +1,6 @@
 package client;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import data.Exercise;
 import data.Workout;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,12 +37,13 @@ public class GuiController implements Initializable {
     private LineChart<String, Number> statistics_workoutduration_graph;
     @FXML
     private TableView<Workout> browse_workouts_table;
-    private ArrayList<Workout> workouts;
-
 
 
     @FXML
     private void handleCreateButton() {
+        if(Client.getActualWorkout()==null){
+            Client.setActualWorkout(new Workout("new workout"));
+        }
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -57,15 +58,18 @@ public class GuiController implements Initializable {
 
     @FXML
     private void handleEditButton() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workouts_edit_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Client.setActualWorkout(workouts_workouts_list.getSelectionModel().getSelectedItem());
+        if(Client.getActualWorkout()!=null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
+                Parent root1 = (Parent) fxmlLoader.load();
+                Scene scene = new Scene(root1);
+                Stage currentStage = (Stage) workouts_edit_button.getScene().getWindow();
+                currentStage.setScene(scene);
+                currentStage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -101,8 +105,6 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.workouts=new ArrayList<>();
-        workouts_workouts_list.getItems().add(new Workout("Test Workout"));
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.getData().add(new XYChart.Data<>("workout 1", 23));
@@ -113,9 +115,18 @@ public class GuiController implements Initializable {
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
+        setData();
 
 
     }
+
+    public void setData(){
+        for (Workout workout:Client.getWorkouts()) {
+            workouts_workouts_list.getItems().add(workout);
+        }
+
+    }
+
 
     public void handleConnectButton(ActionEvent actionEvent) {
         try {

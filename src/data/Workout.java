@@ -29,4 +29,12 @@ public class Workout {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setExcercises(List<Exercise> excercises) {
+        this.excercises = excercises;
+    }
 }
