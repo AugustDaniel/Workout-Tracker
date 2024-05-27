@@ -17,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -34,6 +35,7 @@ public class GuiController implements Initializable  {
     private ListView<Workout>workouts_workouts_list;
     @FXML
     private LineChart<String, Number> statistics_workoutduration_graph;
+    private ArrayList<Workout> workouts;
 
 
 
@@ -98,6 +100,7 @@ public class GuiController implements Initializable  {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.workouts=new ArrayList<>();
         workouts_workouts_list.getItems().add(new Workout("Test Workout"));
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -109,8 +112,6 @@ public class GuiController implements Initializable  {
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
-
-
 
     }
 

@@ -25,4 +25,8 @@ public class Workout {
     public String toString() {
         return name +" "+ excercises.size() +" exercises";
     }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -16,6 +16,10 @@ public class Client extends Application {
         primaryStage.setTitle("FXML Welcome");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+
+        }));
     }
 
 
