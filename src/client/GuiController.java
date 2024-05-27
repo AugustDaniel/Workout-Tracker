@@ -8,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
@@ -16,11 +15,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class GuiController implements Initializable  {
+public class GuiController implements Initializable {
 
     @FXML
     private Button workouts_create_button;
@@ -31,11 +31,11 @@ public class GuiController implements Initializable  {
     @FXML
     private Button browse_uploadworkout_button;
     @FXML
-    private ListView<Workout>workouts_workouts_list;
+    private ListView<Workout> workouts_workouts_list;
     @FXML
     private LineChart<String, Number> statistics_workoutduration_graph;
-
-
+    @FXML
+    private TableView<Workout> browse_workouts_table;
 
     @FXML
     private void handleCreateButton() {
@@ -78,7 +78,6 @@ public class GuiController implements Initializable  {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -111,10 +110,14 @@ public class GuiController implements Initializable  {
         statistics_workoutduration_graph.setLegendVisible(false);
 
 
-
     }
 
     public void handleConnectButton(ActionEvent actionEvent) {
-
+        try {
+            ServerHandler.instance.connect();
+            browse_workouts_table.setItems(ServerHandler.instance.getServerWorkouts());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

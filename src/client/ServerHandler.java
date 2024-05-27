@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class ServerHandler {
 
-    public ServerHandler instance = new ServerHandler();
+    public static ServerHandler instance = new ServerHandler();
 
     private Socket socket;
     private ExecutorService pool = Executors.newFixedThreadPool(1);
