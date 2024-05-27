@@ -26,4 +26,16 @@ public class Workout implements Serializable {
     public String toString() {
         return name +" "+ excercises.size() +" exercises";
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setExcercises(List<Exercise> excercises) {
+        this.excercises = excercises;
+    }
 }

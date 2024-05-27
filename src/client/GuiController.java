@@ -1,6 +1,6 @@
 package client;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import data.Exercise;
 import data.Workout;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +13,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -41,8 +43,12 @@ public class GuiController implements Initializable {
     @FXML
     public TableColumn<Workout, String> browse_workouts_table_name_column;
 
+
     @FXML
     private void handleCreateButton() {
+        if(Client.getActualWorkout()==null){
+            Client.setActualWorkout(new Workout("new workout"));
+        }
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -57,15 +63,18 @@ public class GuiController implements Initializable {
 
     @FXML
     private void handleEditButton() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workouts_edit_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Client.setActualWorkout(workouts_workouts_list.getSelectionModel().getSelectedItem());
+        if(Client.getActualWorkout()!=null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutEditor.fxml"));
+                Parent root1 = (Parent) fxmlLoader.load();
+                Scene scene = new Scene(root1);
+                Stage currentStage = (Stage) workouts_edit_button.getScene().getWindow();
+                currentStage.setScene(scene);
+                currentStage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -112,9 +121,18 @@ public class GuiController implements Initializable {
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
+        setData();
 
 
     }
+
+    public void setData(){
+        for (Workout workout:Client.getWorkouts()) {
+            workouts_workouts_list.getItems().add(workout);
+        }
+
+    }
+
 
     public void handleConnectButton(ActionEvent actionEvent) {
         try {
