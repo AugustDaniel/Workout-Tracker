@@ -37,8 +37,6 @@ public class GuiController implements Initializable {
     @FXML
     private ListView<Workout> workouts_workouts_list;
     @FXML
-    private LineChart<String, Number> statistics_workoutduration_graph;
-    @FXML
     private TableView<Workout> browse_workouts_table;
     @FXML
     public TableColumn<Workout, String> browse_workouts_table_name_column;
@@ -114,18 +112,7 @@ public class GuiController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         workouts_workouts_list.getItems().add(new Workout("Test Workout"));
-
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("workout 1", 23));
-        series.getData().add(new XYChart.Data<>("workout 2", 14));
-        series.getData().add(new XYChart.Data<>("workout 3", 15));
-        series.getData().add(new XYChart.Data<>("workout 4", 24));
-        series.getData().add(new XYChart.Data<>("workout 5", 34));
-
-        statistics_workoutduration_graph.getData().add(series);
-        statistics_workoutduration_graph.setLegendVisible(false);
         setData();
-
         updateBrowseTab();
     }
 
