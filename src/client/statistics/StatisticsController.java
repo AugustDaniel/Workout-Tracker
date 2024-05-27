@@ -1,4 +1,4 @@
-package client;
+package client.statistics;
 
 import data.Exercise;
 import javafx.fxml.FXML;
