@@ -1,27 +1,31 @@
 package data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Exercise {
-    private int laps;
-    private double raps;
+    private String name;
+    private List<ExerciseSet> sets;
 
-    public Exercise(int laps, double raps){
-        this.laps=laps;
-        this.raps=raps;
+    public Exercise(String name) {
+        this.name = name;
+        this.sets = new ArrayList<>();
     }
 
-    public void setLaps(int laps) {
-        this.laps = laps;
+    public String getName() {
+        return this.name;
     }
 
-    public void setRaps(double raps) {
-        this.raps = raps;
+    public List<ExerciseSet> getSets() {
+        return this.sets;
     }
 
-    public int getLaps() {
-        return laps;
+    public void addSet(ExerciseSet set) {
+        this.sets.add(set);
     }
 
-    public double getRaps() {
-        return raps;
+    @Override
+    public String toString() {
+        return this.name;
     }
 }
