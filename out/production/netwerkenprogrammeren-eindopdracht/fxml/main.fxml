@@ -198,7 +198,7 @@
                                 </HBox>
                                 <TableView fx:id="browse_workouts_table" prefHeight="300.0" prefWidth="600.0">
                                     <columns>
-                                        <TableColumn prefWidth="75.0" text="Name" />
+                                        <TableColumn fx:id="browse_workouts_table_name_column" prefWidth="75.0" text="Name" />
                                         <TableColumn prefWidth="75.0" text="Uploader" />
                                     </columns>
                                     <VBox.margin>

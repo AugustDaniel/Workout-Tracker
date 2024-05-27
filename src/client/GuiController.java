@@ -2,6 +2,8 @@ package client;
 
 import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import data.Workout;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,10 +11,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -38,6 +38,8 @@ public class GuiController implements Initializable {
     private LineChart<String, Number> statistics_workoutduration_graph;
     @FXML
     private TableView<Workout> browse_workouts_table;
+    @FXML
+    public TableColumn<Workout, String> browse_workouts_table_name_column;
 
     @FXML
     private void handleCreateButton() {
@@ -119,6 +121,7 @@ public class GuiController implements Initializable {
             ServerHandler.instance.connect();
             List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
             browse_workouts_table.getItems().setAll(workouts);
+            browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
