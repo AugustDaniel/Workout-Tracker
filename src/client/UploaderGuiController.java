@@ -1,16 +1,37 @@
 package client;
 
+import data.Workout;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
-public class UploaderGuiController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class UploaderGuiController implements Initializable {
+    @FXML
+    public ListView<Workout> workoutUploader_workouts_list;
+    @FXML
+    public TextField workoutUploader_name_textfield;
+    @FXML
+    public Button workoutUploader_upload_button;
     @FXML
     private Button workoutUploader_back_button;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        workoutUploader_workouts_list.getItems().setAll(Client.getWorkouts());
+    }
+
     public void handleBackButton(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
@@ -25,5 +46,16 @@ public class UploaderGuiController {
     }
 
     public void handleUploadButton(ActionEvent actionEvent) {
+        if (workoutUploader_workouts_list.getSelectionModel().getSelectedItems() == null) {
+            return;
+        }
+
+        try {
+            ServerHandler.instance.uploadWorkout(workoutUploader_workouts_list.getSelectionModel().getSelectedItem());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        handleBackButton(null);
     }
 }

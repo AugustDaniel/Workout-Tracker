@@ -50,6 +50,7 @@ public class Connection implements Runnable {
             this.output.writeObject(workout);
             this.output.flush();
         } catch (Exception e) {
+            System.out.println(e);
             terminateConnection();
         }
     }

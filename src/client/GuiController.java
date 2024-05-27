@@ -123,7 +123,7 @@ public class GuiController implements Initializable {
         statistics_workoutduration_graph.setLegendVisible(false);
         setData();
 
-
+        updateBrowseTab();
     }
 
     public void setData(){
@@ -137,11 +137,20 @@ public class GuiController implements Initializable {
     public void handleConnectButton(ActionEvent actionEvent) {
         try {
             ServerHandler.instance.connect();
-            List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
-            browse_workouts_table.getItems().setAll(workouts);
-            browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
+            updateBrowseTab();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void updateBrowseTab() {
+        List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
+
+        if (workouts == null) {
+            return;
+        }
+
+        browse_workouts_table.getItems().setAll(workouts);
+        browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
     }
 }
