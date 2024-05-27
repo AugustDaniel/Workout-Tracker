@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class UploaderGuiController implements Initializable {
+public class WorkoutUploaderController implements Initializable {
     @FXML
     public ListView<Workout> workoutUploader_workouts_list;
     @FXML
@@ -31,6 +31,7 @@ public class UploaderGuiController implements Initializable {
         workoutUploader_workouts_list.getItems().setAll(Client.getWorkouts());
     }
 
+    @FXML
     public void handleBackButton(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
@@ -44,6 +45,7 @@ public class UploaderGuiController implements Initializable {
         }
     }
 
+    @FXML
     public void handleUploadButton(ActionEvent actionEvent) {
         if (workoutUploader_workouts_list.getSelectionModel().getSelectedItems() == null) {
             return;

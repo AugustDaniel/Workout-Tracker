@@ -33,13 +33,7 @@ public class GuiController implements Initializable {
     @FXML
     private Button workouts_start_button;
     @FXML
-    private Button browse_uploadworkout_button;
-    @FXML
     private ListView<Workout> workouts_workouts_list;
-    @FXML
-    private TableView<Workout> browse_workouts_table;
-    @FXML
-    public TableColumn<Workout, String> browse_workouts_table_name_column;
 
 
     @FXML
@@ -94,26 +88,10 @@ public class GuiController implements Initializable {
         }
     }
 
-    @FXML
-    private void handlesUploadButton() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutUploader.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) browse_uploadworkout_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         workouts_workouts_list.getItems().add(new Workout("Test Workout"));
         setData();
-        updateBrowseTab();
     }
 
     public void setData(){
@@ -121,31 +99,5 @@ public class GuiController implements Initializable {
             workouts_workouts_list.getItems().add(workout);
         }
 
-    }
-
-
-    public void handleConnectButton(ActionEvent actionEvent) {
-        try {
-            ServerHandler.instance.connect();
-            updateBrowseTab();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateBrowseTab() {
-        List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
-
-        if (workouts == null) {
-            return;
-        }
-
-        browse_workouts_table.getItems().setAll(workouts);
-        browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
-    }
-
-    @FXML
-    public void handleRefreshButton() {
-        updateBrowseTab();
     }
 }

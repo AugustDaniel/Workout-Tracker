@@ -1,4 +1,4 @@
-package client;
+package client.browse;
 
 import data.Workout;
 
