@@ -1,6 +1,8 @@
 package data;
 
-public class ExerciseSet {
+import java.io.Serializable;
+
+public class ExerciseSet implements Serializable {
     private int reps;
     private double kilos;
 

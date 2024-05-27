@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -115,7 +117,9 @@ public class GuiController implements Initializable {
     public void handleConnectButton(ActionEvent actionEvent) {
         try {
             ServerHandler.instance.connect();
-            browse_workouts_table.setItems(ServerHandler.instance.getServerWorkouts());
+            List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
+            System.out.println(workouts);
+            browse_workouts_table.getItems().setAll(workouts);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

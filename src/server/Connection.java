@@ -22,6 +22,7 @@ public class Connection implements Runnable {
         try {
             this.input = new ObjectInputStream(this.client.getInputStream());
             this.output = new ObjectOutputStream(this.client.getOutputStream());
+            output.flush();
         } catch (Exception e) {
             terminateConnection();
         }
@@ -32,8 +33,9 @@ public class Connection implements Runnable {
         try {
             this.output.writeObject(this.workouts);
             this.output.flush();
-
+            System.out.println("Server: written");
             while (this.client.isConnected()) {
+                System.out.println("Server: listening");
                 Workout workout = (Workout) this.input.readObject();
                 Server.addWorkout(workout);
             }

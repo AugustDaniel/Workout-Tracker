@@ -3,6 +3,7 @@ package server;
 import data.Workout;
 
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -22,10 +23,16 @@ public class Server {
         }
 
         ExecutorService service = Executors.newCachedThreadPool();
+        workouts.add(new Workout("test 1"));
+        workouts.add(new Workout("test 2"));
+        System.out.println(workouts);
 
         while (!serverSocket.isClosed()) {
             try {
-                Connection connection = new Connection(serverSocket.accept(), new ArrayList<>(workouts));
+                System.out.println("Server: waiting for connection");
+                Socket client = serverSocket.accept();
+                System.out.println("Server: client connected");
+                Connection connection = new Connection(client, new ArrayList<>(workouts));
                 connections.add(connection);
                 service.execute(connection);
             } catch (Exception e) {

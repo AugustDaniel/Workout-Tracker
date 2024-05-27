@@ -1,9 +1,10 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Workout {
+public class Workout implements Serializable {
 
     private String name;
     private List<Exercise> excercises;

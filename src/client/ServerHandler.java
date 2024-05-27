@@ -1,12 +1,12 @@
 package client;
 
 import data.Workout;
-import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +18,7 @@ public class ServerHandler {
     private ExecutorService pool = Executors.newFixedThreadPool(1);
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private ObservableList<Workout> workouts;
+    private List<Workout> workouts;
 
     private ServerHandler() {
     }
@@ -29,25 +29,36 @@ public class ServerHandler {
             return;
         }
 
+        System.out.println("Client: connecting to socket");
         socket = new Socket("localhost", 8000); //todo
-        input = new ObjectInputStream(socket.getInputStream());
         output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
+        output.flush();
+
+        try {
+            System.out.println("reading list");
+            workouts = (List<Workout>) input.readObject();
+            System.out.println("done reading list ");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        System.out.println("Client: connected");
         startListening();
     }
 
     private void startListening() {
-        if (pool.isTerminated()) {
-            pool.execute(() -> {
-                try {
-                    workouts = (ObservableList<Workout>) input.readObject();
-                    while (socket.isConnected()) {
-                        workouts.add((Workout) input.readObject());
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+        pool.execute(() -> {
+            try {
+                System.out.println("Client: started listening");
+                while (true) {
+                    workouts.add((Workout) input.readObject());
                 }
-            });
-        }
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }); //todo
+
     }
 
     public void disconnect() throws IOException {
@@ -56,7 +67,7 @@ public class ServerHandler {
     }
 
     public void uploadWorkout(Workout workout) throws IOException {
-        if (socket == null || !socket.isConnected()) {
+        if (socket == null || !socket.isConnected() || pool.isTerminated()) {
             return;
         }
 
@@ -64,7 +75,7 @@ public class ServerHandler {
         output.flush();
     }
 
-    public ObservableList<Workout> getServerWorkouts() {
+    public List<Workout> getServerWorkouts() {
         return workouts;
     }
 }
