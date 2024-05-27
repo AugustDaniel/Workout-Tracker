@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class WorkoutUploaderController implements Initializable {
@@ -47,12 +49,12 @@ public class WorkoutUploaderController implements Initializable {
 
     @FXML
     public void handleUploadButton(ActionEvent actionEvent) {
-        if (workoutUploader_workouts_list.getSelectionModel().getSelectedItems() == null) {
-            return;
+        if (workoutUploader_workouts_list.getSelectionModel().getSelectedItems() == null || workoutUploader_name_textfield.getText().isEmpty()) {
+            return; //todo add more robust error handling
         }
 
         try {
-            ServerHandler.instance.uploadWorkout(workoutUploader_workouts_list.getSelectionModel().getSelectedItem());
+            ServerHandler.instance.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +19,7 @@ public class ServerHandler {
     private ExecutorService pool = Executors.newFixedThreadPool(1);
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private List<Workout> workouts;
+    private Map<String, List<Workout>> workouts;
 
     private ServerHandler() {
     }
@@ -34,15 +35,15 @@ public class ServerHandler {
         input = new ObjectInputStream(socket.getInputStream());
         output.flush();
 
-        workouts = (List<Workout>) input.readObject();
+        workouts = (Map<String, List<Workout>>) input.readObject();
         startListening();
     }
 
     private void startListening() {
         pool.execute(() -> {
             try {
-                while (true) {
-                    workouts.add((Workout) input.readObject());
+                while (socket.isConnected()) {
+                    workouts = (Map<String, List<Workout>>) input.readObject();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -56,7 +57,7 @@ public class ServerHandler {
         pool.shutdown();
     }
 
-    public void uploadWorkout(Workout workout) throws IOException {
+    public void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
         if (socket == null || !socket.isConnected() || pool.isTerminated()) {
             return;
         }
@@ -65,7 +66,7 @@ public class ServerHandler {
         output.flush();
     }
 
-    public List<Workout> getServerWorkouts() {
+    public Map<String, List<Workout>> getServerWorkouts() {
         return workouts;
     }
 }

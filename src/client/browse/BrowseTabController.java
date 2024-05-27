@@ -14,15 +14,21 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class BrowseTabController implements Initializable {
 
     @FXML
-    private TableView<Workout> browse_workouts_table;
+    private TableView<WorkoutTableRow> browse_workouts_table;
+
     @FXML
-    public TableColumn<Workout, String> browse_workouts_table_name_column;
+    public TableColumn<WorkoutTableRow, String> browse_workouts_table_name_column;
+    @FXML
+    public TableColumn<WorkoutTableRow, String> browse_workouts_table_uploader_column;
+
     @FXML
     private Button browse_uploadworkout_button;
 
@@ -43,14 +49,23 @@ public class BrowseTabController implements Initializable {
 
     @FXML
     public void updateBrowseTab() {
-        List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
+        Map<String, List<Workout>> workouts = ServerHandler.instance.getServerWorkouts();
 
         if (workouts == null) {
             return;
         }
 
-        browse_workouts_table.getItems().setAll(workouts);
-        browse_workouts_table_name_column.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().toString()));
+        List<WorkoutTableRow> workoutDisplayList = new ArrayList<>();
+        for (Map.Entry<String, List<Workout>> entry : workouts.entrySet()) {
+            String uploader = entry.getKey();
+            for (Workout workout : entry.getValue()) {
+                workoutDisplayList.add(new WorkoutTableRow(uploader, workout.getName()));
+            }
+        }
+
+        browse_workouts_table.getItems().setAll(workoutDisplayList);
+        browse_workouts_table_name_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        browse_workouts_table_uploader_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUploader()));
     }
 
     @FXML

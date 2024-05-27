@@ -6,16 +6,18 @@ import data.Workout;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Connection implements Runnable {
 
     private Socket client;
-    private List<Workout> workouts;
+    private Map<String, List<Workout>> workouts;
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    public Connection(Socket client, List<Workout> workouts) {
+    public Connection(Socket client, Map<String, List<Workout>> workouts) {
         this.client = client;
         this.workouts = workouts;
 
@@ -36,7 +38,7 @@ public class Connection implements Runnable {
             System.out.println("Server: written");
             while (this.client.isConnected()) {
                 System.out.println("Server: listening");
-                Workout workout = (Workout) this.input.readObject();
+                Map.Entry<String, Workout> workout = (Map.Entry<String, Workout>) this.input.readObject();
                 Server.addWorkout(workout);
             }
         } catch (Exception e) {
@@ -44,10 +46,11 @@ public class Connection implements Runnable {
         }
     }
 
-    public void send(Workout workout) {
+    public void send(Map<String, List<Workout>> map) {
         try {
-            this.workouts.add(workout);
-            this.output.writeObject(workout);
+            this.workouts = map;
+            //todo maybe only do this when asked for by the client to improve performance
+            this.output.writeObject(map);
             this.output.flush();
         } catch (Exception e) {
             System.out.println(e);
