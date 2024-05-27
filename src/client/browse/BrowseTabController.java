@@ -23,12 +23,10 @@ public class BrowseTabController implements Initializable {
 
     @FXML
     private TableView<WorkoutTableRow> browse_workouts_table;
-
     @FXML
     public TableColumn<WorkoutTableRow, String> browse_workouts_table_name_column;
     @FXML
     public TableColumn<WorkoutTableRow, String> browse_workouts_table_uploader_column;
-
     @FXML
     private Button browse_uploadworkout_button;
 
@@ -55,15 +53,15 @@ public class BrowseTabController implements Initializable {
             return;
         }
 
-        List<WorkoutTableRow> workoutDisplayList = new ArrayList<>();
+        List<WorkoutTableRow> workoutTableRows = new ArrayList<>();
         for (Map.Entry<String, List<Workout>> entry : workouts.entrySet()) {
             String uploader = entry.getKey();
             for (Workout workout : entry.getValue()) {
-                workoutDisplayList.add(new WorkoutTableRow(uploader, workout.getName()));
+                workoutTableRows.add(new WorkoutTableRow(uploader, workout.getName()));
             }
         }
 
-        browse_workouts_table.getItems().setAll(workoutDisplayList);
+        browse_workouts_table.getItems().setAll(workoutTableRows);
         browse_workouts_table_name_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         browse_workouts_table_uploader_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUploader()));
     }

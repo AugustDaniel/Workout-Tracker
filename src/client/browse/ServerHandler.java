@@ -49,7 +49,6 @@ public class ServerHandler {
                 throw new RuntimeException(e);
             }
         });
-
     }
 
     public void disconnect() throws IOException {

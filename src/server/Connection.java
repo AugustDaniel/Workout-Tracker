@@ -26,6 +26,7 @@ public class Connection implements Runnable {
             this.output = new ObjectOutputStream(this.client.getOutputStream());
             output.flush();
         } catch (Exception e) {
+            System.out.println(e);
             terminateConnection();
         }
     }
@@ -42,6 +43,7 @@ public class Connection implements Runnable {
                 Server.addWorkout(workout);
             }
         } catch (Exception e) {
+            System.out.println(e);
             terminateConnection();
         }
     }
@@ -52,6 +54,7 @@ public class Connection implements Runnable {
             //todo maybe only do this when asked for by the client to improve performance
             this.output.writeObject(map);
             this.output.flush();
+            this.output.reset();
         } catch (Exception e) {
             System.out.println(e);
             terminateConnection();

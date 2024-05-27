@@ -33,7 +33,7 @@ public class Server {
                 System.out.println("Server: waiting for connection");
                 Socket client = serverSocket.accept();
                 System.out.println("Server: client connected");
-                Connection connection = new Connection(client, new LinkedHashMap<String, List<Workout>>(workouts));
+                Connection connection = new Connection(client, new LinkedHashMap<>(workouts));
                 connections.add(connection);
                 service.execute(connection);
             } catch (Exception e) {
@@ -43,12 +43,12 @@ public class Server {
     }
 
     public static synchronized void addWorkout(Map.Entry<String, Workout> entry) {
-        if (workouts.computeIfAbsent(entry.getKey(), s -> new ArrayList<>())
-                .stream()
-                .noneMatch(s -> entry.getValue().equals(s))
-        ) {
-            workouts.get(entry.getKey()).add(entry.getValue());
-            connections.forEach(c -> c.send(workouts));
+        List<Workout> workoutList = workouts.computeIfAbsent(entry.getKey(), k -> new ArrayList<>());
+
+        boolean workoutExists = workoutList.stream().anyMatch(workout -> workout.equals(entry.getValue()));
+        if (!workoutExists) {
+            workoutList.add(entry.getValue());
+            connections.forEach(connection -> connection.send(workouts));
         }
     }
 }
