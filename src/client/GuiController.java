@@ -7,6 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ListView;
@@ -28,9 +31,9 @@ public class GuiController implements Initializable  {
     @FXML
     private Button browse_uploadworkout_button;
     @FXML
-    private TableView<Workout> browse_workouts_table;
-    @FXML
     private ListView<Workout>workouts_workouts_list;
+    @FXML
+    private LineChart<String, Number> statistics_workoutduration_graph;
 
 
 
@@ -96,6 +99,22 @@ public class GuiController implements Initializable  {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         workouts_workouts_list.getItems().add(new Workout("Test Workout"));
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.getData().add(new XYChart.Data<>("workout 1", 23));
+        series.getData().add(new XYChart.Data<>("workout 2", 14));
+        series.getData().add(new XYChart.Data<>("workout 3", 15));
+        series.getData().add(new XYChart.Data<>("workout 4", 24));
+        series.getData().add(new XYChart.Data<>("workout 5", 34));
+
+        statistics_workoutduration_graph.getData().add(series);
+        statistics_workoutduration_graph.setLegendVisible(false);
+
+
+
+    }
+
+    public void handleConnectButton(ActionEvent actionEvent) {
 
     }
 }
