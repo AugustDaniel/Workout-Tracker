@@ -16,4 +16,9 @@ public class ExerciseSet {
     public double getKilos() {
         return kilos;
     }
+
+    @Override
+    public String toString() {
+        return reps+"reps" +" "+ kilos+"kilos";
+    }
 }
