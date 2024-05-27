@@ -23,41 +23,31 @@ public class ServerHandler {
     private ServerHandler() {
     }
 
-    public void connect() throws IOException {
+    public void connect() throws Exception {
         if (socket != null && socket.isConnected()) {
             startListening();
             return;
         }
 
-        System.out.println("Client: connecting to socket");
         socket = new Socket("localhost", 8000); //todo
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
         output.flush();
 
-        try {
-            System.out.println("reading list");
-            workouts = (List<Workout>) input.readObject();
-            System.out.println("done reading list ");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        System.out.println("Client: connected");
+        workouts = (List<Workout>) input.readObject();
         startListening();
     }
 
     private void startListening() {
         pool.execute(() -> {
             try {
-                System.out.println("Client: started listening");
                 while (true) {
                     workouts.add((Workout) input.readObject());
                 }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        }); //todo
+        });
 
     }
 

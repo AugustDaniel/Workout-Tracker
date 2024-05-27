@@ -118,9 +118,8 @@ public class GuiController implements Initializable {
         try {
             ServerHandler.instance.connect();
             List<Workout> workouts = ServerHandler.instance.getServerWorkouts();
-            System.out.println(workouts);
             browse_workouts_table.getItems().setAll(workouts);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
