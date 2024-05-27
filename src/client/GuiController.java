@@ -95,7 +95,7 @@ public class GuiController implements Initializable  {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        workouts_workouts_list.getItems().add(new Workout());
+        workouts_workouts_list.getItems().add(new Workout("Test Workout"));
 
     }
 }

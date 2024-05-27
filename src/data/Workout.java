@@ -5,9 +5,11 @@ import java.util.List;
 
 public class Workout {
 
+    private String name;
     private List<Exercise> excercises;
 
-    public Workout() {
+    public Workout(String name) {
+        this.name = name;
         this.excercises = new ArrayList<>();
     }
 
