@@ -57,12 +57,12 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Raps">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reps">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Text>
-                        <TextField fx:id="workoutstarter_raps_textfield" />
+                        <TextField fx:id="workoutstarter_reps_textfield" />
                      </children>
                      <HBox.margin>
                         <Insets left="10.0" />
