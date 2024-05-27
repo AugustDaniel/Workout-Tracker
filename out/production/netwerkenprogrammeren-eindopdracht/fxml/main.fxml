@@ -173,7 +173,7 @@
                             <children>
                                 <HBox prefHeight="70.0" prefWidth="600.0">
                                     <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Browse workouts" wrappingWidth="344.018798828125">
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Browse workouts" wrappingWidth="305.35211181640625">
                                             <font>
                                                 <Font size="36.0" />
                                             </font>
@@ -181,15 +181,17 @@
                                                 <Insets left="10.0" top="10.0" />
                                             </HBox.margin>
                                         </Text>
-                              <Button fx:id="browse_connect_button" mnemonicParsing="false" prefHeight="50.0" prefWidth="92.0" text="Connect" onAction="#handleConnectButton">
+                              <Button fx:id="browse_refresh_button" mnemonicParsing="false" prefHeight="50.0" prefWidth="79.0" text="Refresh">
                                  <HBox.margin>
                                     <Insets right="5.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
-                                        <Button fx:id="browse_uploadworkout_button" mnemonicParsing="false" onAction="#handlesUploadButton" prefHeight="50.0" prefWidth="159.0" text="Upload workout">
-                                            <font>
-                                                <Font size="14.0" />
-                                            </font>
+                              <Button fx:id="browse_connect_button" mnemonicParsing="false" onAction="#handleConnectButton" prefHeight="50.0" prefWidth="96.0" text="Connect">
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                                        <Button fx:id="browse_uploadworkout_button" mnemonicParsing="false" onAction="#handlesUploadButton" prefHeight="50.0" prefWidth="137.0" text="Upload workout">
                                             <HBox.margin>
                                                 <Insets left="5.0" right="10.0" top="10.0" />
                                             </HBox.margin>
