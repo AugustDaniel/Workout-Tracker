@@ -28,5 +28,6 @@ public class StarterGuiController {
     }
 
     public void handleFinishButton(ActionEvent actionEvent) {
+        //todo
     }
 }
