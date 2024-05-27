@@ -1,9 +1,16 @@
 package data;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Workout {
 
-    private ArrayList<Excercise> excercises;
+    private ArrayList<Exercise> excercises;
+
+    public Workout (){
+        this.excercises=new ArrayList<>();
+    }
+
+    public void addExercise(Exercise exercise){
+        excercises.add(exercise);
+    }
 }
