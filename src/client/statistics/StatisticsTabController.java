@@ -10,7 +10,7 @@ import javafx.scene.control.ListView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class StatisticsController implements Initializable {
+public class StatisticsTabController implements Initializable {
 
     @FXML
     public ListView<Exercise> statistics_exercises_list;
