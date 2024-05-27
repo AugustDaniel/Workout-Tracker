@@ -68,4 +68,7 @@ public class Client extends Application {
     public static Workout getActualWorkout() {
         return actualWorkout;
     }
+    public void addWorkout(Workout workout){
+        workouts.add(workout);
+    }
 }

@@ -81,15 +81,18 @@ public class GuiController implements Initializable {
 
     @FXML
     private void handlesStartButton() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutStarter.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workouts_start_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Client.setActualWorkout(workouts_workouts_list.getSelectionModel().getSelectedItem());
+        if(Client.getActualWorkout()!=null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutStarter.fxml"));
+                Parent root1 = (Parent) fxmlLoader.load();
+                Scene scene = new Scene(root1);
+                Stage currentStage = (Stage) workouts_start_button.getScene().getWindow();
+                currentStage.setScene(scene);
+                currentStage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

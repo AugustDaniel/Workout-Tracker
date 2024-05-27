@@ -28,8 +28,13 @@ public class EditorGuiController {
     private ListView<Exercise>workouteditor_exercisesinworkout_list;
    @FXML
    private TextField workouteditor_workoutname_textfield;
+   @FXML
+   private TextField workouteditor_addexercise_textfield;
 
     public void handleAddButton(ActionEvent actionEvent) {
+        Client.getExercises().add(new Exercise(workouteditor_addexercise_textfield.getText()));
+        workouteditor_exercises_list.getItems().clear();
+        workouteditor_exercises_list.getItems().addAll(Client.getExercises());
 
     }
 
@@ -72,6 +77,8 @@ public class EditorGuiController {
         Workout actualWorkout = Client.getActualWorkout();
         actualWorkout.setName(workouteditor_workoutname_textfield.getText());
         actualWorkout.setExcercises(workouteditor_exercisesinworkout_list.getItems());
+        Client.getWorkouts().remove(actualWorkout);
+        Client.getWorkouts().add(actualWorkout);
         Client.setActualWorkout(null);
     }
 }
