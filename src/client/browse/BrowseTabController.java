@@ -110,7 +110,7 @@ public class BrowseTabController implements Initializable {
             refreshWorkouts();
         } else {
             workouts = workouts.entrySet()
-                    .parallelStream()
+                    .stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
                             entry -> entry.getValue()
