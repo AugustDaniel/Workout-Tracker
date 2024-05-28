@@ -24,9 +24,6 @@ public class Server {
         }
 
         ExecutorService service = Executors.newCachedThreadPool();
-//        workouts.add(new Workout("test 1"));
-//        workouts.add(new Workout("test 2"));
-//        System.out.println(workouts);
 
         while (!serverSocket.isClosed()) {
             try {
