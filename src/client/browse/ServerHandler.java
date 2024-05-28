@@ -20,7 +20,7 @@ public class ServerHandler {
     private ExecutorService pool = Executors.newFixedThreadPool(1);
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private Map<String, List<Workout>> workouts;
+    private Map<String, List<Workout>> workouts = null; //yabadabadoo
     private Future<?> currentTask;
 
     private ServerHandler() {

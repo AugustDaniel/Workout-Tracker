@@ -12,82 +12,83 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.browse.BrowseTabController">
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.browse.BrowseTabController">
+    <VBox prefHeight="370" prefWidth="600">
         <children>
-            <VBox prefHeight="373.0" prefWidth="600.0">
+            <HBox>
                 <children>
-                    <HBox prefHeight="70.0" prefWidth="600.0">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Browse workouts"
+                          wrappingWidth="305.35211181640625">
+                        <font>
+                            <Font size="36.0"/>
+                        </font>
+                        <HBox.margin>
+                            <Insets left="10.0" top="10.0"/>
+                        </HBox.margin>
+                    </Text>
+                    <Button fx:id="browse_refresh_button" mnemonicParsing="false" onAction="#handleRefreshButton"
+                            prefHeight="50.0" prefWidth="79.0" text="Refresh">
+                        <HBox.margin>
+                            <Insets left="50.0" right="5.0" top="10.0"/>
+                        </HBox.margin>
+                    </Button>
+                    <Button fx:id="browse_uploadworkout_button" alignment="CENTER" mnemonicParsing="false"
+                            onAction="#handlesUploadButton" prefHeight="50.0" prefWidth="137.0" text="Upload workout">
+                        <HBox.margin>
+                            <Insets left="5.0" right="5.0" top="10.0"/>
+                        </HBox.margin>
+                    </Button>
+                </children>
+            </HBox>
+            <Label text="Search for name">
+                <VBox.margin>
+                    <Insets left="10.0"/>
+                </VBox.margin>
+            </Label>
+            <HBox>
+                <children>
+                    <TextField fx:id="browse_search_text_field">
+                        <HBox.margin>
+                            <Insets right="5.0"/>
+                        </HBox.margin>
+                    </TextField>
+                    <Button fx:id="browse_search_button" mnemonicParsing="false" onAction="#handleSearchButton"
+                            text="Enter"/>
+                </children>
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0"/>
+                </VBox.margin>
+            </HBox>
+            <VBox VBox.vgrow="ALWAYS">
+                <children>
+                    <TableView fx:id="browse_workouts_table" >
+                        <columns>
+                            <TableColumn fx:id="browse_workouts_table_name_column" prefWidth="75.0" text="Name"/>
+                            <TableColumn fx:id="browse_workouts_table_uploader_column" prefWidth="75.0"
+                                         text="Uploader"/>
+                        </columns>
+                        <VBox.margin>
+                            <Insets bottom="10.0" left="10.0" right="10.0"/>
+                        </VBox.margin>
+                    </TableView>
+                    <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="590.0">
                         <children>
-                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Browse workouts" wrappingWidth="305.35211181640625">
-                                <font>
-                                    <Font size="36.0" />
-                                </font>
+                            <Button fx:id="browse_save_button" mnemonicParsing="false" onAction="#handleSaveButton"
+                                    text="Save">
                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                </HBox.margin>
-                            </Text>
-                            <Button fx:id="browse_refresh_button" mnemonicParsing="false" onAction="#handleRefreshButton" prefHeight="50.0" prefWidth="79.0" text="Refresh">
-                                <HBox.margin>
-                                    <Insets left="50.0" right="5.0" top="10.0" />
+                                    <Insets right="10.0"/>
                                 </HBox.margin>
                             </Button>
-                            <Button fx:id="browse_uploadworkout_button" alignment="CENTER" mnemonicParsing="false" onAction="#handlesUploadButton" prefHeight="50.0" prefWidth="137.0" text="Upload workout">
-                                <HBox.margin>
-                                    <Insets left="5.0" right="5.0" top="10.0" />
-                                </HBox.margin>
-                            </Button>
+                            <Button fx:id="browse_uploader_button" mnemonicParsing="false"
+                                    onAction="#handleViewUploaderButton" text="View uploader"/>
                         </children>
+                        <VBox.margin>
+                            <Insets bottom="10.0" left="10.0"/>
+                        </VBox.margin>
                     </HBox>
-               <VBox prefHeight="200.0" prefWidth="100.0">
-                  <children>
-                     <Label text="Search for name">
-                        <VBox.margin>
-                           <Insets left="10.0" />
-                        </VBox.margin>
-                     </Label>
-                     <HBox prefHeight="100.0" prefWidth="200.0">
-                        <children>
-                           <TextField fx:id="browse_search_text_field">
-                              <HBox.margin>
-                                 <Insets right="5.0" />
-                              </HBox.margin>
-                           </TextField>
-                           <Button fx:id="browse_search_button" onAction="#handleSearchButton" mnemonicParsing="false" text="Enter" />
-                        </children>
-                        <VBox.margin>
-                           <Insets bottom="10.0" left="10.0" />
-                        </VBox.margin>
-                     </HBox>
-                          <TableView fx:id="browse_workouts_table" prefHeight="462.0" prefWidth="580.0">
-                              <columns>
-                                  <TableColumn fx:id="browse_workouts_table_name_column" prefWidth="75.0" text="Name" />
-                                  <TableColumn fx:id="browse_workouts_table_uploader_column" prefWidth="75.0" text="Uploader" />
-                              </columns>
-                              <VBox.margin>
-                                  <Insets bottom="10.0" left="10.0" right="10.0" />
-                              </VBox.margin>
-                        <padding>
-                           <Insets bottom="160.0" />
-                        </padding>
-                          </TableView>
-                     <HBox prefHeight="77.0" prefWidth="590.0">
-                        <children>
-                           <Button fx:id="browse_save_button" onAction="#handleSaveButton" mnemonicParsing="false" text="Save">
-                              <HBox.margin>
-                                 <Insets bottom="10.0" right="10.0" />
-                              </HBox.margin>
-                           </Button>
-                           <Button fx:id="browse_uploader_button" onAction="#handleViewUploaderButton" mnemonicParsing="false" text="View uploader" />
-                        </children>
-                        <VBox.margin>
-                           <Insets left="10.0" />
-                        </VBox.margin>
-                     </HBox>
-                  </children>
-               </VBox>
                 </children>
             </VBox>
         </children>
-    </AnchorPane>
+    </VBox>
 </AnchorPane>
