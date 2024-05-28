@@ -41,19 +41,19 @@
                     </HBox>
                <VBox prefHeight="200.0" prefWidth="100.0">
                   <children>
-                     <Label text="Search">
+                     <Label text="Search for name">
                         <VBox.margin>
                            <Insets left="10.0" />
                         </VBox.margin>
                      </Label>
                      <HBox prefHeight="100.0" prefWidth="200.0">
                         <children>
-                           <TextField>
+                           <TextField fx:id="browse_search_text_field">
                               <HBox.margin>
                                  <Insets right="5.0" />
                               </HBox.margin>
                            </TextField>
-                           <Button mnemonicParsing="false" text="Enter" />
+                           <Button fx:id="browse_search_button" onAction="#handleSearchButton" mnemonicParsing="false" text="Enter" />
                         </children>
                         <VBox.margin>
                            <Insets bottom="10.0" left="10.0" />
@@ -73,12 +73,12 @@
                           </TableView>
                      <HBox prefHeight="77.0" prefWidth="590.0">
                         <children>
-                           <Button mnemonicParsing="false" text="Save">
+                           <Button fx:id="browse_save_button" onAction="#handleSaveButton" mnemonicParsing="false" text="Save">
                               <HBox.margin>
                                  <Insets bottom="10.0" right="10.0" />
                               </HBox.margin>
                            </Button>
-                           <Button mnemonicParsing="false" text="View uploader" />
+                           <Button fx:id="browse_uploader_button" onAction="#handleViewUploaderButton" mnemonicParsing="false" text="View uploader" />
                         </children>
                         <VBox.margin>
                            <Insets left="10.0" />

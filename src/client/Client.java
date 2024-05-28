@@ -9,9 +9,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class Client extends Application {
-    private static ArrayList<Workout> workouts;
+    private static Set<Workout> workouts;
     private static ArrayList<Exercise> exercises;
     private static Workout actualWorkout;
 
@@ -31,12 +33,11 @@ public class Client extends Application {
         }));
 
 
-
     }
 
-    public void setData(){
-        workouts=new ArrayList<>();
-        exercises=new ArrayList<>();
+    public void setData() {
+        workouts = new LinkedHashSet<>();
+        exercises = new ArrayList<>();
         workouts.add(new Workout("workout 1"));
         workouts.add(new Workout("workout 2"));
         workouts.add(new Workout("workout 3"));
@@ -47,15 +48,16 @@ public class Client extends Application {
         exercises.add(new Exercise("Exercise 3"));
     }
 
-    public static ArrayList<Workout> getWorkouts() {
+    public static Set<Workout> getWorkouts() {
         return workouts;
     }
 
     public static ArrayList<Exercise> getExercises() {
         return exercises;
     }
-    public void editWorkout(Workout workout, String name, ArrayList<Exercise> exercises){
-        for (Exercise exercise: exercises) {
+
+    public void editWorkout(Workout workout, String name, ArrayList<Exercise> exercises) {
+        for (Exercise exercise : exercises) {
             workout.addExercise(exercise);
         }
         workout.setName(name);
@@ -68,7 +70,8 @@ public class Client extends Application {
     public static Workout getActualWorkout() {
         return actualWorkout;
     }
-    public void addWorkout(Workout workout){
+
+    public static void addWorkout(Workout workout) {
         workouts.add(workout);
     }
 }

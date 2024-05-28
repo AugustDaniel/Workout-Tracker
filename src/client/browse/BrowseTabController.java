@@ -1,5 +1,6 @@
 package client.browse;
 
+import client.Client;
 import data.Workout;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -19,18 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class BrowseTabController implements Initializable {
     @FXML
-    public Button browse_refresh_button;
-    @FXML
     public TextField browse_search_text_field;
-    @FXML
-    public Button browse_search_button;
-    @FXML
-    public Button browse_save_button;
-    @FXML
-    public Button browse_uploader_button;
     @FXML
     private TableView<WorkoutTableRow> browse_workouts_table;
     @FXML
@@ -40,16 +34,17 @@ public class BrowseTabController implements Initializable {
     @FXML
     private Button browse_uploadworkout_button;
 
+    private Map<String, List<Workout>> workouts;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ServerHandler.instance.connect();
+        refreshWorkouts();
         updateBrowseTab();
     }
 
     @FXML
     public void updateBrowseTab() {
-        Map<String, List<Workout>> workouts = ServerHandler.instance.getServerWorkouts();
-
         if (workouts == null) {
             return;
         }
@@ -58,7 +53,7 @@ public class BrowseTabController implements Initializable {
         for (Map.Entry<String, List<Workout>> entry : workouts.entrySet()) {
             String uploader = entry.getKey();
             for (Workout workout : entry.getValue()) {
-                workoutTableRows.add(new WorkoutTableRow(uploader, workout.getName()));
+                workoutTableRows.add(new WorkoutTableRow(workout, uploader));
             }
         }
 
@@ -69,7 +64,12 @@ public class BrowseTabController implements Initializable {
 
     @FXML
     public void handleRefreshButton() {
+        refreshWorkouts();
         updateBrowseTab();
+    }
+
+    private void refreshWorkouts() {
+        workouts = ServerHandler.instance.getServerWorkouts();
     }
 
     @FXML
@@ -84,5 +84,47 @@ public class BrowseTabController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleSaveButton() {
+        WorkoutTableRow row = browse_workouts_table.getSelectionModel().getSelectedItem();
+
+        if (row == null) {
+            return;
+        }
+
+        Client.addWorkout(row.getWorkout());
+    }
+
+    @FXML
+    private void handleSearchButton() {
+        String searchText = browse_search_text_field.getText().toLowerCase();
+        refreshWorkouts();
+
+        if (workouts == null) {
+            return;
+        }
+
+        if (searchText.isEmpty()) {
+            refreshWorkouts();
+        } else {
+            workouts = workouts.entrySet()
+                    .parallelStream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> entry.getValue()
+                                    .stream()
+                                    .filter(workout -> workout.getName().toLowerCase().contains(searchText))
+                                    .collect(Collectors.toList())
+                    ));
+        }
+
+        updateBrowseTab();
+    }
+
+    @FXML
+    private void handleViewUploaderButton() {
+        //TODO create uploader page and switch to it here
     }
 }
