@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ServerHandler {
 
@@ -20,44 +21,46 @@ public class ServerHandler {
     private ObjectInputStream input;
     private ObjectOutputStream output;
     private Map<String, List<Workout>> workouts;
+    private Future<?> currentTask;
 
     private ServerHandler() {
     }
 
     public void connect() throws Exception {
-        if (socket != null && socket.isConnected()) {
-            startListening();
+        if (currentTask != null && !currentTask.isDone()) {
             return;
         }
 
-        socket = new Socket("localhost", 8000); //todo
-        output = new ObjectOutputStream(socket.getOutputStream());
-        input = new ObjectInputStream(socket.getInputStream());
-        output.flush();
+        currentTask = pool.submit(() -> {
+            while (true) {
+                try {
+                    socket = new Socket("localhost", 8000);
+                    output = new ObjectOutputStream(socket.getOutputStream());
+                    input = new ObjectInputStream(socket.getInputStream());
+                    output.flush();
 
-        workouts = (Map<String, List<Workout>>) input.readObject();
-        startListening();
-    }
-
-    private void startListening() {
-        pool.execute(() -> {
-            try {
-                while (socket.isConnected()) {
                     workouts = (Map<String, List<Workout>>) input.readObject();
+
+                    while (socket.isConnected()) {
+                        workouts = (Map<String, List<Workout>>) input.readObject();
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
             }
         });
     }
 
     public void disconnect() throws IOException {
         if (socket != null) socket.close();
-        pool.shutdown();
+        if (!currentTask.isDone()) currentTask.cancel(true);
+        if (input != null) input.close();
+        if (output != null) output.close();
+        pool.shutdownNow();
     }
 
     public void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
-        if (socket == null || !socket.isConnected() || pool.isTerminated()) {
+        if (socket == null || !socket.isConnected() || currentTask.isDone()) {
             return;
         }
 
