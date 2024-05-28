@@ -26,7 +26,7 @@ public class ServerHandler {
     private ServerHandler() {
     }
 
-    public void connect() throws Exception {
+    public void connect() {
         if (currentTask != null && !currentTask.isDone()) {
             return;
         }

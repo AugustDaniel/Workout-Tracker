@@ -32,17 +32,8 @@ public class BrowseTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ServerHandler.instance.connect();
         updateBrowseTab();
-    }
-
-    @FXML
-    public void handleConnectButton(ActionEvent actionEvent) {
-        try {
-            ServerHandler.instance.connect();
-            updateBrowseTab();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @FXML

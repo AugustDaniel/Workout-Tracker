@@ -34,11 +34,6 @@
                                     <Insets right="5.0" top="10.0" />
                                 </HBox.margin>
                             </Button>
-                            <Button fx:id="browse_connect_button" mnemonicParsing="false" onAction="#handleConnectButton" prefHeight="50.0" prefWidth="96.0" text="Connect">
-                                <HBox.margin>
-                                    <Insets left="5.0" right="5.0" top="10.0" />
-                                </HBox.margin>
-                            </Button>
                             <Button fx:id="browse_uploadworkout_button" mnemonicParsing="false" onAction="#handlesUploadButton" prefHeight="50.0" prefWidth="137.0" text="Upload workout">
                                 <HBox.margin>
                                     <Insets left="5.0" right="10.0" top="10.0" />
