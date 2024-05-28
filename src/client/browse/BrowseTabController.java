@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -20,7 +21,16 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class BrowseTabController implements Initializable {
-
+    @FXML
+    public Button browse_refresh_button;
+    @FXML
+    public TextField browse_search_text_field;
+    @FXML
+    public Button browse_search_button;
+    @FXML
+    public Button browse_save_button;
+    @FXML
+    public Button browse_uploader_button;
     @FXML
     private TableView<WorkoutTableRow> browse_workouts_table;
     @FXML
