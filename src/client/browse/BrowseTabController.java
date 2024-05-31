@@ -9,13 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -23,6 +22,8 @@ import java.util.stream.Collectors;
 public class BrowseTabController {
     @FXML
     public TextField browse_search_text_field;
+    @FXML
+    public VBox browse_tab_pane;
     @FXML
     private TableView<WorkoutTableRow> browse_workouts_table;
     @FXML
@@ -80,12 +81,8 @@ public class BrowseTabController {
     @FXML
     private void handlesUploadButton() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/workoutUploader.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) browse_uploadworkout_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
+            Parent newContent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/workoutUploader.fxml")));
+            browse_tab_pane.getChildren().setAll(newContent);
         } catch (Exception e) {
             e.printStackTrace();
         }

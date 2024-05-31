@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 
 
 public class GuiController implements Initializable {
-
     @FXML
     private Button workouts_create_button;
     @FXML

@@ -10,11 +10,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.AbstractMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class WorkoutUploaderController implements Initializable {
@@ -24,6 +26,8 @@ public class WorkoutUploaderController implements Initializable {
     public TextField workoutUploader_name_textfield;
     @FXML
     public Button workoutUploader_upload_button;
+    @FXML
+    public VBox workoutUploader_vbox;
     @FXML
     private Button workoutUploader_back_button;
 
@@ -35,12 +39,8 @@ public class WorkoutUploaderController implements Initializable {
     @FXML
     public void handleBackButton(ActionEvent actionEvent) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workoutUploader_back_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
+            Parent newContent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/browseTab.fxml")));
+            workoutUploader_vbox.getChildren().setAll(newContent);
         } catch (Exception e) {
             e.printStackTrace();
         }
