@@ -117,11 +117,6 @@ public class BrowseTabController {
         updateBrowseTab();
     }
 
-    @FXML
-    private void handleViewUploaderButton() {
-        //TODO create uploader page and switch to it here
-    }
-
     private void goToScreen(String path) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
