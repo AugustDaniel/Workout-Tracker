@@ -1,12 +1,14 @@
 package client.browse;
 
 import client.Client;
+import client.SubMenu;
 import data.Workout;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,7 +21,7 @@ import java.util.AbstractMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class WorkoutUploaderController implements Initializable {
+public class WorkoutUploaderController implements Initializable, SubMenu {
     @FXML
     public ListView<Workout> workoutUploader_workouts_list;
     @FXML
@@ -27,9 +29,10 @@ public class WorkoutUploaderController implements Initializable {
     @FXML
     public Button workoutUploader_upload_button;
     @FXML
-    public VBox workoutUploader_vbox;
-    @FXML
     private Button workoutUploader_back_button;
+
+    private Parent root;
+    private String rootPath;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -40,7 +43,7 @@ public class WorkoutUploaderController implements Initializable {
     public void handleBackButton(ActionEvent actionEvent) {
         try {
             Parent newContent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/browseTab.fxml")));
-            workoutUploader_vbox.getChildren().setAll(newContent);
+            ((VBox) root).getChildren().setAll(newContent);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,5 +64,10 @@ public class WorkoutUploaderController implements Initializable {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    @Override
+    public void setMenu(Parent parent) {
+        root = parent;
     }
 }

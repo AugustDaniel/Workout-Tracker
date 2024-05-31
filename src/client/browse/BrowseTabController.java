@@ -1,6 +1,7 @@
 package client.browse;
 
 import client.Client;
+import client.SubMenu;
 import data.Workout;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,9 +31,6 @@ public class BrowseTabController {
     public TableColumn<WorkoutTableRow, String> browse_workouts_table_name_column;
     @FXML
     public TableColumn<WorkoutTableRow, String> browse_workouts_table_uploader_column;
-    @FXML
-    private Button browse_uploadworkout_button;
-
     private Map<String, List<Workout>> workouts = new HashMap<>();
     private ExecutorService thread = Executors.newSingleThreadExecutor();
 
@@ -80,12 +78,7 @@ public class BrowseTabController {
 
     @FXML
     private void handlesUploadButton() {
-        try {
-            Parent newContent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/workoutUploader.fxml")));
-            browse_tab_pane.getChildren().setAll(newContent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        goToScreen("/fxml/workoutUploader.fxml");
     }
 
     @FXML
@@ -127,5 +120,17 @@ public class BrowseTabController {
     @FXML
     private void handleViewUploaderButton() {
         //TODO create uploader page and switch to it here
+    }
+
+    private void goToScreen(String path) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Parent newContent = loader.load();
+            SubMenu menu = loader.getController();
+            menu.setMenu(browse_tab_pane);
+            browse_tab_pane.getChildren().setAll(newContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
