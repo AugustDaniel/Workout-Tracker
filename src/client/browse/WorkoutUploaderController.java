@@ -8,11 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -54,9 +53,9 @@ public class WorkoutUploaderController implements Initializable {
         }
 
         try {
-            ServerHandler.instance.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
-        } catch (Exception e) {
-            System.out.println(e);
+            ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
+        } catch (IOException e) {
+            ServerHandler.showConnectionError();
         }
 
         handleBackButton(null);

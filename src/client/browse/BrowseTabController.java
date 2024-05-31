@@ -9,12 +9,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +36,23 @@ public class BrowseTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ServerHandler.instance.connect();
+        handleRefreshButton();
+    }
+
+    @FXML
+    public void handleRefreshButton() {
         refreshWorkouts();
         updateBrowseTab();
+    }
+
+    private void refreshWorkouts() {
+        try {
+            workouts = ServerHandler.getServerWorkouts();
+        } catch (IOException e) {
+            ServerHandler.showConnectionError();
+        } catch (ClassNotFoundException e) {
+            ServerHandler.showServerError();
+        }
     }
 
     @FXML
@@ -60,16 +72,6 @@ public class BrowseTabController implements Initializable {
         browse_workouts_table.getItems().setAll(workoutTableRows);
         browse_workouts_table_name_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         browse_workouts_table_uploader_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUploader()));
-    }
-
-    @FXML
-    public void handleRefreshButton() {
-        refreshWorkouts();
-        updateBrowseTab();
-    }
-
-    private void refreshWorkouts() {
-        workouts = ServerHandler.instance.getServerWorkouts();
     }
 
     @FXML
@@ -100,7 +102,6 @@ public class BrowseTabController implements Initializable {
     @FXML
     private void handleSearchButton() {
         String searchText = browse_search_text_field.getText().toLowerCase();
-        refreshWorkouts();
 
         if (workouts == null) {
             return;

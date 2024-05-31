@@ -1,6 +1,10 @@
 package client.browse;
 
+import com.sun.corba.se.spi.activation.ServerOperations;
 import data.Workout;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import util.ConnectionOptions;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,61 +18,59 @@ import java.util.concurrent.Future;
 
 public class ServerHandler {
 
-    public static ServerHandler instance = new ServerHandler();
+    private static final String IP_ADDR = "localhost";
+    private static final int PORT = 8000;
+    private static Socket socket;
+    private static ObjectInputStream input;
+    private static ObjectOutputStream output;
 
-    private Socket socket;
-    private ExecutorService pool = Executors.newFixedThreadPool(1);
-    private ObjectInputStream input;
-    private ObjectOutputStream output;
-    private Map<String, List<Workout>> workouts;
-    private Future<?> currentTask;
-
-    private ServerHandler() {
-    }
-
-    public void connect() {
-        if (currentTask != null && !currentTask.isDone()) {
-            return;
+    private static void connect() throws IOException {
+        try {
+            socket = new Socket(IP_ADDR, PORT);
+            input = new ObjectInputStream(socket.getInputStream());
+            output = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            disconnect();
+            throw e;
         }
-
-        currentTask = pool.submit(() -> {
-            while (true) {
-                try {
-                    socket = new Socket("localhost", 8000);
-                    output = new ObjectOutputStream(socket.getOutputStream());
-                    input = new ObjectInputStream(socket.getInputStream());
-                    output.flush();
-
-                    workouts = (Map<String, List<Workout>>) input.readObject();
-
-                    while (socket.isConnected()) {
-                        workouts = (Map<String, List<Workout>>) input.readObject();
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 
-    public void disconnect() throws IOException {
-        if (socket != null) socket.close();
-        if (!currentTask.isDone()) currentTask.cancel(true);
-        if (input != null) input.close();
-        if (output != null) output.close();
-        pool.shutdownNow();
-    }
-
-    public void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
-        if (socket == null || !socket.isConnected() || currentTask.isDone()) {
-            return;
+    private static void disconnect() {
+        try {
+            if (socket != null) socket.close();
+            if (input != null) input.close();
+            if (output != null) output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        output.writeObject(workout);
-        output.flush();
     }
 
-    public Map<String, List<Workout>> getServerWorkouts() {
-        return workouts;
+    public static void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
+        try {
+            output.writeObject(ConnectionOptions.SEND_WORKOUT);
+            output.writeObject(workout);
+            output.flush();
+        } catch (IOException e) {
+            connect();
+            uploadWorkout(workout);
+        }
+    }
+
+    public static Map<String, List<Workout>> getServerWorkouts() throws IOException, ClassNotFoundException {
+        try {
+            output.writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
+            return (Map<String, List<Workout>>) input.readObject();
+        } catch (IOException e) {
+            connect();
+            return getServerWorkouts();
+        }
+    }
+
+    public static void showConnectionError() {
+        new Alert(Alert.AlertType.ERROR, "Connection error", ButtonType.OK).showAndWait();
+    }
+
+    public static void showServerError() {
+        new Alert(Alert.AlertType.ERROR, "Server error", ButtonType.OK).showAndWait();
     }
 }

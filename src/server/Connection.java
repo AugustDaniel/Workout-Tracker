@@ -32,7 +32,6 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-
         while (true) {
             try {
                 ConnectionOptions option = (ConnectionOptions) input.readObject();
