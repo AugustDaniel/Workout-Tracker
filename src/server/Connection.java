@@ -2,24 +2,23 @@ package server;
 
 
 import data.Workout;
+import util.ConnectionOptions;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Connection implements Runnable {
 
     private Socket client;
-    private Map<String, List<Workout>> workouts;
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    public Connection(Socket client, Map<String, List<Workout>> workouts) {
+    public Connection(Socket client) {
         this.client = client;
-        this.workouts = workouts;
 
         try {
             this.input = new ObjectInputStream(this.client.getInputStream());
@@ -33,33 +32,28 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-        try {
-            this.output.writeObject(this.workouts);
-            this.output.flush();
-            System.out.println("Server: written");
-            while (this.client.isConnected()) {
-                System.out.println("Server: listening");
-                Map.Entry<String, Workout> workout = (Map.Entry<String, Workout>) this.input.readObject();
-                Server.addWorkout(workout);
+
+        while (true) {
+            try {
+                ConnectionOptions option = (ConnectionOptions) input.readObject();
+                switch (option) {
+                    case SEND_WORKOUT:
+                        Server.addWorkout((Map.Entry<String, Workout>) input.readObject());
+                        break;
+                    case RETRIEVE_WORKOUTS:
+                        output.writeObject(Server.getWorkouts());
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                terminateConnection();
+                break;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.out.println(e);
-            terminateConnection();
         }
     }
 
-    public void send(Map<String, List<Workout>> map) {
-        try {
-            this.workouts = map;
-            //todo maybe only do this when asked for by the client to improve performance
-            this.output.writeObject(map);
-            this.output.flush();
-            this.output.reset();
-        } catch (Exception e) {
-            System.out.println(e);
-            terminateConnection();
-        }
-    }
 
     private void terminateConnection() {
         try {

@@ -23,13 +23,13 @@ public class EditorGuiController {
     @FXML
     private Button workouteditor_back_button;
     @FXML
-    private ListView<Exercise>workouteditor_exercises_list;
-   @FXML
-    private ListView<Exercise>workouteditor_exercisesinworkout_list;
-   @FXML
-   private TextField workouteditor_workoutname_textfield;
-   @FXML
-   private TextField workouteditor_addexercise_textfield;
+    private ListView<Exercise> workouteditor_exercises_list;
+    @FXML
+    private ListView<Exercise> workouteditor_exercisesinworkout_list;
+    @FXML
+    private TextField workouteditor_workoutname_textfield;
+    @FXML
+    private TextField workouteditor_addexercise_textfield;
 
     public void handleAddButton(ActionEvent actionEvent) {
         Client.getExercises().add(new Exercise(workouteditor_addexercise_textfield.getText()));
@@ -54,7 +54,7 @@ public class EditorGuiController {
 
     public void initialize() {
 
-        for (Exercise exercise :Client.getExercises()) {
+        for (Exercise exercise : Client.getExercises()) {
             workouteditor_exercises_list.getItems().add(exercise);
         }
         workouteditor_exercisesinworkout_list.getItems().addAll(Client.getActualWorkout().getExcercises());
@@ -62,13 +62,13 @@ public class EditorGuiController {
     }
 
     public void handleAddToButton(ActionEvent actionEvent) {
-        if(workouteditor_exercises_list.getSelectionModel().getSelectedItems()!=null) {
+        if (workouteditor_exercises_list.getSelectionModel().getSelectedItems() != null) {
             workouteditor_exercisesinworkout_list.getItems().add(workouteditor_exercises_list.getSelectionModel().getSelectedItems().get(0));
         }
     }
 
     public void handleRemoveFromButton(ActionEvent actionEvent) {
-        if(workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItems()!=null){
+        if (workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItems() != null) {
             workouteditor_exercisesinworkout_list.getItems().remove(workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItem());
         }
     }

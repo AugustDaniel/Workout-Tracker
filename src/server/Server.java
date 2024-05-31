@@ -27,11 +27,8 @@ public class Server {
 
         while (!serverSocket.isClosed()) {
             try {
-                System.out.println("Server: waiting for connection");
-                Socket client = serverSocket.accept();
-                System.out.println("Server: client connected");
-                Connection connection = new Connection(client, new LinkedHashMap<>(workouts));
-                connections.add(connection);
+                Connection connection = new Connection(serverSocket.accept());
+                connections.add(new Connection(serverSocket.accept()));
                 service.execute(connection);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -45,7 +42,10 @@ public class Server {
         boolean workoutExists = workoutList.stream().anyMatch(workout -> workout.equals(entry.getValue()));
         if (!workoutExists) {
             workoutList.add(entry.getValue());
-            connections.forEach(connection -> connection.send(workouts));
         }
+    }
+
+    public static Map<String, List<Workout>> getWorkouts() {
+        return workouts;
     }
 }
