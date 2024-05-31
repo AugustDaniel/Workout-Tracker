@@ -22,6 +22,9 @@ public class ServerHandler {
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
 
+    private ServerHandler() {
+    }
+
     private static void connect() throws IOException {
         try {
             socket = new Socket();
