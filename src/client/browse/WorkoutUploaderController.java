@@ -48,8 +48,14 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
 
     @FXML
     public void handleUploadButton(ActionEvent actionEvent) {
-        if (workoutUploader_workouts_list.getSelectionModel().getSelectedItems() == null || workoutUploader_name_textfield.getText().isEmpty()) {
-            return; //todo add more robust error handling
+        if (workoutUploader_workouts_list.getSelectionModel().getSelectedItem() == null) {
+            new Alert(Alert.AlertType.ERROR, "Please select workout", ButtonType.CLOSE).showAndWait();
+            return;
+        }
+
+        if (workoutUploader_name_textfield.getText().isEmpty()) {
+            new Alert(Alert.AlertType.ERROR, "Please enter uploader name", ButtonType.CLOSE).showAndWait();
+            return;
         }
 
         new Thread(() -> {

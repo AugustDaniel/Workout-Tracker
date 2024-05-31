@@ -39,13 +39,10 @@ public class Connection implements Runnable {
                 System.out.println("Retrieved " + option.toString());
                 switch (option) {
                     case SEND_WORKOUT:
-                        Server.addWorkout((Map.Entry<String, Workout>) input.readObject());
-                        System.out.println("Workout added");
+                        receiveWorkoutFromClient();
                         break;
                     case RETRIEVE_WORKOUTS:
-                        output.writeObject(Server.getWorkouts());
-                        output.flush();
-                        System.out.println("Workouts sent");
+                        sendWorkoutsToClient();
                         break;
                 }
             } catch (IOException e) {
@@ -56,6 +53,23 @@ public class Connection implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void receiveWorkoutFromClient() throws IOException, ClassNotFoundException {
+        Map.Entry<String, Workout> entry = (Map.Entry<String, Workout>) input.readObject();
+
+        if (entry.getKey() == null || entry.getValue() == null) {
+            return;
+        }
+
+        Server.addWorkout(entry);
+        System.out.println("Workout added");
+    }
+
+    private void sendWorkoutsToClient() throws IOException {
+        output.writeObject(Server.getWorkouts());
+        output.flush();
+        System.out.println("Workouts sent");
     }
 
 
