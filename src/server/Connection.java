@@ -21,8 +21,8 @@ public class Connection implements Runnable {
         this.client = client;
 
         try {
-            this.input = new ObjectInputStream(this.client.getInputStream());
             this.output = new ObjectOutputStream(this.client.getOutputStream());
+            this.input = new ObjectInputStream(this.client.getInputStream());
             output.flush();
         } catch (Exception e) {
             System.out.println(e);
@@ -35,12 +35,16 @@ public class Connection implements Runnable {
         while (true) {
             try {
                 ConnectionOptions option = (ConnectionOptions) input.readObject();
+                System.out.println("Retrieved " + option.toString());
                 switch (option) {
                     case SEND_WORKOUT:
                         Server.addWorkout((Map.Entry<String, Workout>) input.readObject());
+                        System.out.println("Workout added");
                         break;
                     case RETRIEVE_WORKOUTS:
                         output.writeObject(Server.getWorkouts());
+                        output.flush();
+                        System.out.println("Workouts sent");
                         break;
                 }
             } catch (IOException e) {

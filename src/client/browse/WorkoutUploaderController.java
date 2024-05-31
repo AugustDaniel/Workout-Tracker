@@ -2,6 +2,7 @@ package client.browse;
 
 import client.Client;
 import data.Workout;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +15,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.AbstractMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class WorkoutUploaderController implements Initializable {
@@ -52,12 +52,14 @@ public class WorkoutUploaderController implements Initializable {
             return; //todo add more robust error handling
         }
 
-        try {
-            ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
-        } catch (IOException e) {
-            ServerHandler.showConnectionError();
-        }
-
-        handleBackButton(null);
+        new Thread(() -> {
+            try {
+                ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
+                Platform.runLater(ServerHandler::showUploadSuccessful);
+            } catch (IOException e) {
+                Platform.runLater(ServerHandler::showServerError);
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

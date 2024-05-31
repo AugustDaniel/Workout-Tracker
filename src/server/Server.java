@@ -24,11 +24,13 @@ public class Server {
         }
 
         ExecutorService service = Executors.newCachedThreadPool();
+        addWorkout(new AbstractMap.SimpleEntry<>("testuploader", new Workout("testworkout")));
 
         while (!serverSocket.isClosed()) {
             try {
                 Connection connection = new Connection(serverSocket.accept());
-                connections.add(new Connection(serverSocket.accept()));
+                System.out.println("Connection accepted");
+                connections.add(connection);
                 service.execute(connection);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -43,9 +45,12 @@ public class Server {
         if (!workoutExists) {
             workoutList.add(entry.getValue());
         }
+
+        System.out.println(workouts);
     }
 
     public static Map<String, List<Workout>> getWorkouts() {
+        System.out.println(workouts);
         return workouts;
     }
 }

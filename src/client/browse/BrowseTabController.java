@@ -2,25 +2,24 @@ package client.browse;
 
 import client.Client;
 import data.Workout;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-public class BrowseTabController implements Initializable {
+public class BrowseTabController {
     @FXML
     public TextField browse_search_text_field;
     @FXML
@@ -33,26 +32,27 @@ public class BrowseTabController implements Initializable {
     private Button browse_uploadworkout_button;
 
     private Map<String, List<Workout>> workouts;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        handleRefreshButton();
-    }
+    private ExecutorService thread = Executors.newSingleThreadExecutor();
 
     @FXML
     public void handleRefreshButton() {
         refreshWorkouts();
-        updateBrowseTab();
     }
 
     private void refreshWorkouts() {
-        try {
-            workouts = ServerHandler.getServerWorkouts();
-        } catch (IOException e) {
-            ServerHandler.showConnectionError();
-        } catch (ClassNotFoundException e) {
-            ServerHandler.showServerError();
-        }
+        thread.submit(() -> {
+            try {
+                workouts = ServerHandler.getServerWorkouts();
+                System.out.println(workouts);
+                Platform.runLater(this::updateBrowseTab);
+            } catch (IOException e) {
+                Platform.runLater(ServerHandler::showConnectionError);
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                Platform.runLater(ServerHandler::showServerError);
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -60,6 +60,8 @@ public class BrowseTabController implements Initializable {
         if (workouts == null) {
             return;
         }
+
+        browse_workouts_table.getItems().clear();
 
         List<WorkoutTableRow> workoutTableRows = new ArrayList<>();
         for (Map.Entry<String, List<Workout>> entry : workouts.entrySet()) {

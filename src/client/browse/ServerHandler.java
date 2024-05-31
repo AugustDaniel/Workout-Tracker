@@ -1,6 +1,5 @@
 package client.browse;
 
-import com.sun.corba.se.spi.activation.ServerOperations;
 import data.Workout;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -9,24 +8,23 @@ import util.ConnectionOptions;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class ServerHandler {
 
     private static final String IP_ADDR = "localhost";
     private static final int PORT = 8000;
-    private static Socket socket;
+    private static Socket socket = new Socket();
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
 
-    public static void connect() throws IOException {
+    private static void connect() throws IOException {
         try {
-            socket = new Socket(IP_ADDR, PORT);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(IP_ADDR, PORT), 1000);
             input = new ObjectInputStream(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
@@ -35,9 +33,9 @@ public class ServerHandler {
         }
     }
 
-    public static void disconnect() {
+    private static void disconnect() {
         try {
-            if (socket != null) socket.close();
+            socket.close();
             if (input != null) input.close();
             if (output != null) output.close();
         } catch (IOException e) {
@@ -45,32 +43,57 @@ public class ServerHandler {
         }
     }
 
-    public static void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
+    private static Object readObject() throws IOException, ClassNotFoundException {
+        checkNullPointers();
+
         try {
-            output.writeObject(ConnectionOptions.SEND_WORKOUT);
-            output.writeObject(workout);
+            return input.readObject();
+        } catch (IOException e) {
+            connect();
+            return input.readObject();
+        }
+    }
+
+    private static void writeObject(Object o) throws IOException {
+        checkNullPointers();
+
+        try {
+            output.writeObject(o);
             output.flush();
         } catch (IOException e) {
             connect();
-            uploadWorkout(workout);
+            output.writeObject(o);
+            output.flush();
         }
+    }
+
+    private static void checkNullPointers() throws IOException {
+        if (socket == null || input == null || output == null) {
+            connect();
+        }
+    }
+
+    public static void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
+        writeObject(ConnectionOptions.SEND_WORKOUT);
+        writeObject(workout);
     }
 
     public static Map<String, List<Workout>> getServerWorkouts() throws IOException, ClassNotFoundException {
-        try {
-            output.writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
-            return (Map<String, List<Workout>>) input.readObject();
-        } catch (IOException e) {
-            connect();
-            return getServerWorkouts();
-        }
+        writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
+        Map<String, List<Workout>> workouts = (Map<String, List<Workout>>) readObject();
+        System.out.println(workouts);
+        return workouts;
     }
 
-    public static void showConnectionError() {
+    public static void showConnectionError() { //todo maybe srp
         new Alert(Alert.AlertType.ERROR, "Connection error", ButtonType.OK).showAndWait();
     }
 
     public static void showServerError() {
         new Alert(Alert.AlertType.ERROR, "Server error", ButtonType.OK).showAndWait();
+    }
+
+    public static void showUploadSuccessful() {
+        new Alert(Alert.AlertType.INFORMATION, "Upload successful", ButtonType.OK).showAndWait();
     }
 }
