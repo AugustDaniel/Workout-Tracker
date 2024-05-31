@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import util.ConnectionOptions;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -81,7 +82,6 @@ public class ServerHandler {
     public static Map<String, List<Workout>> getServerWorkouts() throws IOException, ClassNotFoundException {
         writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
         Map<String, List<Workout>> workouts = (Map<String, List<Workout>>) readObject();
-        System.out.println(workouts);
         return workouts;
     }
 

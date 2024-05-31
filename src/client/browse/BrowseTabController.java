@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +32,7 @@ public class BrowseTabController {
     @FXML
     private Button browse_uploadworkout_button;
 
-    private Map<String, List<Workout>> workouts;
+    private Map<String, List<Workout>> workouts = new HashMap<>();
     private ExecutorService thread = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -43,7 +44,6 @@ public class BrowseTabController {
         thread.submit(() -> {
             try {
                 workouts = ServerHandler.getServerWorkouts();
-                System.out.println(workouts);
                 Platform.runLater(this::updateBrowseTab);
             } catch (IOException e) {
                 Platform.runLater(ServerHandler::showConnectionError);
@@ -61,6 +61,7 @@ public class BrowseTabController {
             return;
         }
 
+        System.out.println(workouts);
         browse_workouts_table.getItems().clear();
 
         List<WorkoutTableRow> workoutTableRows = new ArrayList<>();

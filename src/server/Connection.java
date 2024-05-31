@@ -1,6 +1,7 @@
 package server;
 
 
+import client.browse.ServerHandler;
 import data.Workout;
 import util.ConnectionOptions;
 
