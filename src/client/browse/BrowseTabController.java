@@ -60,7 +60,6 @@ public class BrowseTabController {
             return;
         }
 
-        System.out.println(workouts);
         browse_workouts_table.getItems().clear();
 
         List<WorkoutTableRow> workoutTableRows = new ArrayList<>();

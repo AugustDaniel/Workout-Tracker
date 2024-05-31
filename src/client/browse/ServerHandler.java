@@ -84,8 +84,7 @@ public class ServerHandler {
 
     public static Map<String, List<Workout>> getServerWorkouts() throws IOException, ClassNotFoundException {
         writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
-        Map<String, List<Workout>> workouts = (Map<String, List<Workout>>) readObject();
-        return workouts;
+        return (Map<String, List<Workout>>) readObject();
     }
 
     public static void showConnectionError() { //todo maybe srp

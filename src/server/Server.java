@@ -45,12 +45,9 @@ public class Server {
         if (!workoutExists) {
             workoutList.add(entry.getValue());
         }
-
-        System.out.println(workouts);
     }
 
     public static Map<String, List<Workout>> getWorkouts() {
-        System.out.println(workouts);
-        return workouts;
+        return new LinkedHashMap<>(workouts);
     }
 }
