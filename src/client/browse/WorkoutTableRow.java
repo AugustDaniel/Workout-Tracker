@@ -4,7 +4,7 @@ import data.Workout;
 
 public class WorkoutTableRow {
 
-    public Workout workout;
+    private Workout workout;
     private String uploader;
     private String name;
 
