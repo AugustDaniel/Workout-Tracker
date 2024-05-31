@@ -28,11 +28,8 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
     public TextField workoutUploader_name_textfield;
     @FXML
     public Button workoutUploader_upload_button;
-    @FXML
-    private Button workoutUploader_back_button;
 
     private Parent root;
-    private String rootPath;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
