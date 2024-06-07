@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.browse.BrowseTabController">
-    <VBox prefHeight="370" prefWidth="600" fx:id="browse_tab_pane">
+    <VBox fx:id="browse_tab_pane" prefHeight="370" prefWidth="600" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <HBox>
                 <children>
