@@ -38,4 +38,7 @@ public class Workout implements Serializable {
     public void setExcercises(List<Exercise> excercises) {
         this.excercises = excercises;
     }
+    public List getExercises(){
+        return excercises;
+    }
 }
