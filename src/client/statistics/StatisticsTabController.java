@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,6 +21,14 @@ public class StatisticsTabController implements Initializable {
     public ListView<Exercise> statistics_exercises_list;
     @FXML
     public LineChart<String, Number> statistics_workoutduration_graph;
+    @FXML
+    public Text statistics_average_kilos_text;
+    @FXML
+    public Text statistics_variance_kilos_text;
+    @FXML
+    public Text statistics_average_reps_text;
+    @FXML
+    public Text statistics_variance_reps_text;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
