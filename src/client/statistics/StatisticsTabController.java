@@ -4,6 +4,8 @@ import client.Client;
 import data.Exercise;
 import data.ExerciseSet;
 import data.Workout;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,12 +45,25 @@ public class StatisticsTabController implements Initializable {
         statistics_workoutduration_graph.setLegendVisible(false);
 
 
+        statistics_exercises_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Exercise>() {
+            @Override
+            public void changed(ObservableValue<? extends Exercise> observable, Exercise oldValue, Exercise newValue) {
+                if (newValue != null) {
+                    updateStatistics(newValue);
+                }
+            }
+        });
+
         for (Workout workout:Client.getWorkouts()) {
             for (Exercise exercise: workout.getExcercises()) {
                 statistics_exercises_list.getItems().add(exercise);
             }
         }
         System.out.println(statistics_exercises_list.getItems());
+    }
+
+    public void updateStatistics(Exercise exercise){
+        statistics_average_kilos_text.setText(String.valueOf(exercise.getSets().get(0).getKilos()));
     }
 
 }
