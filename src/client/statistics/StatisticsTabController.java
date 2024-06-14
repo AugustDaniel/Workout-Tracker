@@ -1,6 +1,10 @@
 package client.statistics;
 
+import client.Client;
 import data.Exercise;
+import data.ExerciseSet;
+import data.Workout;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -28,5 +32,14 @@ public class StatisticsTabController implements Initializable {
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
+
+
+        for (Workout workout:Client.getWorkouts()) {
+            for (Exercise exercise: workout.getExcercises()) {
+                statistics_exercises_list.getItems().add(exercise);
+            }
+        }
+        System.out.println(statistics_exercises_list.getItems());
     }
+
 }

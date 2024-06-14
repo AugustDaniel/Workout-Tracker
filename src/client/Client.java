@@ -1,6 +1,7 @@
 package client;
 
 import data.Exercise;
+import data.ExerciseSet;
 import data.Workout;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -42,6 +43,11 @@ public class Client extends Application {
         workouts.add(new Workout("workout 2"));
         workouts.add(new Workout("workout 3"));
         workouts.add(new Workout("workout 4"));
+        Workout workout = new Workout("testWorkout");
+        Exercise exercise = new Exercise("ex1");
+        exercise.addSet(new ExerciseSet(10,5));
+        workout.addExercise(exercise);
+        workouts.add(workout);
 
         exercises.add(new Exercise("Exercise 1"));
         exercises.add(new Exercise("Exercise 2"));
