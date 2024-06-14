@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.statistics.StatisticsTabController" fx:id="statistics_tab">
+<AnchorPane fx:id="statistics_tab" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.statistics.StatisticsTabController">
     <children>
         <HBox prefHeight="377.0" prefWidth="608.0">
             <children>
@@ -18,35 +19,73 @@
                     <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Exercises">
                             <VBox.margin>
-                                <Insets left="10.0" top="10.0"/>
+                                <Insets left="10.0" top="10.0" />
                             </VBox.margin>
                             <font>
-                                <Font size="36.0"/>
+                                <Font size="36.0" />
                             </font>
                         </Text>
                         <ListView fx:id="statistics_exercises_list" prefHeight="298.0" prefWidth="266.0">
                             <VBox.margin>
-                                <Insets bottom="10.0" left="10.0"/>
+                                <Insets bottom="10.0" left="10.0" />
                             </VBox.margin>
                         </ListView>
                     </children>
                 </VBox>
                 <VBox prefHeight="377.0" prefWidth="320.0">
                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Workout duration">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise statistics">
                             <VBox.margin>
-                                <Insets left="10.0" top="10.0"/>
+                                <Insets left="10.0" top="10.0" />
                             </VBox.margin>
                             <font>
-                                <Font size="36.0"/>
+                                <Font size="36.0" />
                             </font>
                         </Text>
-                        <LineChart fx:id="statistics_workoutduration_graph">
+                  <HBox prefHeight="22.0" prefWidth="327.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Average kilos:" wrappingWidth="110.0">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin></Text>
+                        <Text fx:id="statistics_average_kilos_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="22.0" prefWidth="327.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variance kilos: " wrappingWidth="110.0">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin></Text>
+                        <Text fx:id="statistics_variance_kilos_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="68.0" prefHeight="22.0" prefWidth="327.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Average reps:" wrappingWidth="110.0">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Text fx:id="statistics_average_reps_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="90.0" prefHeight="22.0" prefWidth="327.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variance reps: " wrappingWidth="110.0">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Text fx:id="statistics_variance_kilos_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </HBox>
+                        <LineChart fx:id="statistics_workoutduration_graph" prefHeight="147.0" prefWidth="269.0">
                             <xAxis>
-                                <CategoryAxis side="BOTTOM"/>
+                                <CategoryAxis side="BOTTOM" />
                             </xAxis>
                             <yAxis>
-                                <NumberAxis side="LEFT"/>
+                                <NumberAxis side="LEFT" />
                             </yAxis>
                         </LineChart>
                     </children>
@@ -55,4 +94,3 @@
         </HBox>
     </children>
 </AnchorPane>
-
