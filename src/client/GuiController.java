@@ -1,6 +1,7 @@
 package client;
 
 import data.Exercise;
+import data.ExerciseSet;
 import data.Workout;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -108,13 +109,35 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("workout 1", 23));
-        series.getData().add(new XYChart.Data<>("workout 2", 14));
-        series.getData().add(new XYChart.Data<>("workout 3", 15));
-        series.getData().add(new XYChart.Data<>("workout 4", 24));
-        series.getData().add(new XYChart.Data<>("workout 5", 34));
+
+        for (Workout workout : Client.getWorkouts()) {
+            double totalKilos = 0;
+            double totalReps = 0;
+            int totalSets = 0;
+
+            for (Exercise exercise : workout.getExcercises()) {
+                for (ExerciseSet exerciseSet : exercise.getSets()) {
+                    totalKilos += exerciseSet.getKilos();
+                    totalReps += exerciseSet.getReps();
+                    totalSets += 1;
+                }
+            }
+
+            if(totalSets>0) {
+                double averageKilos = totalKilos / totalSets;
+                double averageReps = totalReps / totalSets;
+
+                System.out.println("Workout: " + workout.getName());
+                System.out.println("Average Kilos: " + averageKilos);
+                System.out.println("Average Reps: " + averageReps);
+
+
+                series.getData().add(new XYChart.Data<>(workout.getName(), averageKilos));
+
+            }
+        }
+
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
