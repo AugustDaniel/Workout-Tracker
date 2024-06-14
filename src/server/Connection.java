@@ -45,7 +45,7 @@ public class Connection implements Runnable {
                         sendWorkoutsToClient();
                         break;
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 terminateConnection();
                 break;
@@ -75,9 +75,10 @@ public class Connection implements Runnable {
 
     private void terminateConnection() {
         try {
-            if (input != null) input.close();
-            if (output != null) output.close();
-            if (client != null && !client.isClosed()) client.close();
+            if (client != null) client.close();
+            client = null;
+            input = null;
+            output = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
