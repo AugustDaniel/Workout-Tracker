@@ -61,7 +61,8 @@ public class StatisticsTabController implements Initializable {
     }
 
     public void updateStatistics(Exercise exercise) {
-        statistics_average_kilos_text.setText(String.valueOf(AverageCalculator.getAverage(exercise)));
+        statistics_average_kilos_text.setText(String.valueOf(AverageCalculator.getAverageKilos(exercise)));
+        statistics_average_reps_text.setText(String.valueOf(AverageCalculator.getAverageReps(exercise)));
         series.getData().clear();
         int i = 0;
         for (ExerciseSet set : exercise.getSets()) {

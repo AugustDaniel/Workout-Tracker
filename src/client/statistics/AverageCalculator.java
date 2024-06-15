@@ -6,30 +6,47 @@ import data.ExerciseSet;
 
 public class AverageCalculator {
     static double[] kilos;
-    static int amount;
+    static double[] reps;
+    static int amountKilos;
+    static int amountReps;
 
 
     public static double getAverage(Exercise exercise) {
-        amount = 0;
+        amountKilos = 0;
+        amountReps = 0;
 
         for (ExerciseSet exerciseSet : exercise.getSets()) {
-            amount += 1;
-            System.out.println(exerciseSet.getKilos());
+            amountKilos += 1;
+            amountReps += 1;
         }
 
-        kilos = new double[amount];
-        amount = 0;
+        kilos = new double[amountKilos];
+        amountKilos = 0;
+
+        reps = new double[amountReps];
+        amountReps = 0;
 
 
         for (ExerciseSet exerciseSet : exercise.getSets()) {
-            kilos[amount] = exerciseSet.getKilos();
-            amount+=1;
+            kilos[amountKilos] = exerciseSet.getKilos();
+            amountKilos+=1;
+
+            reps[amountReps]=exerciseSet.getReps();
+            amountReps+=1;
         }
 
-        System.out.println(kilos.length);
 
 
-
-        return SumCalculator.sum(kilos)/(amount);
+        return SumCalculator.sum(kilos)/(kilos.length);
     }
+
+    public static double getAverageReps(Exercise exercise){
+        getAverage(exercise);
+        return SumCalculator.sum(reps)/amountReps;
+    }
+    public static double getAverageKilos(Exercise exercise){
+        getAverage(exercise);
+        return SumCalculator.sum(kilos)/amountKilos;
+    }
+
 }
