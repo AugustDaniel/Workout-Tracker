@@ -60,6 +60,7 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
             return;
         }
 
+        System.out.println("thread is made");
         new Thread(() -> {
             try {
                 ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
