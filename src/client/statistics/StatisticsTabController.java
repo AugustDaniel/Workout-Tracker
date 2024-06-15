@@ -48,13 +48,11 @@ public class StatisticsTabController implements Initializable {
         });
 
 
-
-
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
 
-        for (Workout workout:Client.getWorkouts()) {
-            for (Exercise exercise: workout.getExcercises()) {
+        for (Workout workout : Client.getWorkouts()) {
+            for (Exercise exercise : workout.getExcercises()) {
 
                 statistics_exercises_list.getItems().add(exercise);
 
@@ -62,15 +60,15 @@ public class StatisticsTabController implements Initializable {
         }
     }
 
-    public void updateStatistics(Exercise exercise){
-        statistics_average_kilos_text.setText(String.valueOf(exercise.getSets().get(0).getKilos()));
+    public void updateStatistics(Exercise exercise) {
+        statistics_average_kilos_text.setText(String.valueOf(AverageCalculator.getAverage(exercise)));
         series.getData().clear();
         int i = 0;
-        for (ExerciseSet set: exercise.getSets()) {
-            if(!exercise.getSets().isEmpty()){
-            series.getData().add(new XYChart.Data<>("set"+i, set.getKilos()));
-            i+=1;}
-            else {
+        for (ExerciseSet set : exercise.getSets()) {
+            if (!exercise.getSets().isEmpty()) {
+                series.getData().add(new XYChart.Data<>("set" + i, set.getKilos()));
+                i += 1;
+            } else {
                 series.getData().clear();
             }
         }
