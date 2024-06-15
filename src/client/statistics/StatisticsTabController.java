@@ -67,7 +67,7 @@ public class StatisticsTabController implements Initializable {
         series.getData().clear();
         int i = 0;
         for (ExerciseSet set: exercise.getSets()) {
-            if(exercise.getSets()!=null){
+            if(!exercise.getSets().isEmpty()){
             series.getData().add(new XYChart.Data<>("set"+i, set.getKilos()));
             i+=1;}
             else {
