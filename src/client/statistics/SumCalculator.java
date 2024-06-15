@@ -14,30 +14,24 @@ public class SumCalculator {
     private static class DoubleAdder extends RecursiveTask<Double> {
 
         private final double[] list;
-        private Double sum;
-
-        public DoubleAdder(double[] list, Double sum) {
-            this.list = list;
-            this.sum = sum;
-        }
 
         public DoubleAdder(double[] list) {
-            this(list, 0.0);
+            this.list = list;
         }
 
         @Override
         protected Double compute() {
             if (this.list.length == 1) {
-                this.sum += this.list[0];
-                return this.list[0];
+                return list[0];
             }
 
             double[] firstHalf = Arrays.copyOfRange(this.list, 0, this.list.length / 2);
             double[] secondHalf = Arrays.copyOfRange(this.list, this.list.length / 2, this.list.length);
 
-            invokeAll(new DoubleAdder(firstHalf, this.sum), new DoubleAdder(secondHalf, this.sum));
+            DoubleAdder firstTask = new DoubleAdder(firstHalf);
+            DoubleAdder secondTask = new DoubleAdder(secondHalf);
 
-            return this.sum;
+            return firstTask.invoke() + secondTask.invoke();
         }
     }
 }
