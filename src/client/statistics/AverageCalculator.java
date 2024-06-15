@@ -26,7 +26,6 @@ public class AverageCalculator {
         reps = new double[amountReps];
         amountReps = 0;
 
-
         for (ExerciseSet exerciseSet : exercise.getSets()) {
             kilos[amountKilos] = exerciseSet.getKilos();
             amountKilos+=1;
@@ -35,8 +34,6 @@ public class AverageCalculator {
             amountReps+=1;
         }
 
-
-
         return SumCalculator.sum(kilos)/(kilos.length);
     }
 
@@ -44,6 +41,7 @@ public class AverageCalculator {
         getAverage(exercise);
         return SumCalculator.sum(reps)/amountReps;
     }
+
     public static double getAverageKilos(Exercise exercise){
         getAverage(exercise);
         return SumCalculator.sum(kilos)/amountKilos;
