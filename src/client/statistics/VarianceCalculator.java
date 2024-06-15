@@ -10,13 +10,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class VarianceCalculator {
 
+    public enum Option {KILOS, REPS}
+
     private static double average;
     private static final AtomicInteger amount = new AtomicInteger(0);
+    private static Option currentOption;
 
-    public static synchronized double getVariance(Exercise exercise) {
+    public static double getVarianceKilos(Exercise exercise) {
+        return getVariance(exercise, Option.KILOS);
+    }
+
+    public static double getVarianceReps(Exercise exercise) {
+        return getVariance(exercise, Option.REPS);
+    }
+
+    private static synchronized double getVariance(Exercise exercise, Option option) {
         ForkJoinPool pool = new ForkJoinPool();
         amount.set(0);
-        average = AverageCalculator.getAverage(exercise);
+        currentOption = option;
+
+        switch (currentOption) {
+            case KILOS: average = AverageCalculator.getAverageKilos(exercise); break;
+            case REPS: average = AverageCalculator.getAverageReps(exercise); break;
+        }
+
         return pool.invoke(new VarianceSetAdder(exercise.getSets())) / amount.get();
     }
 
@@ -24,7 +41,7 @@ public class VarianceCalculator {
 
         private final List<ExerciseSet> sets;
 
-        public VarianceSetAdder(List<ExerciseSet> sets ) {
+        public VarianceSetAdder(List<ExerciseSet> sets) {
             this.sets = sets;
         }
 
@@ -32,7 +49,20 @@ public class VarianceCalculator {
         protected Double compute() {
             if (sets.size() == 1) {
                 amount.incrementAndGet();
-                return Math.pow(sets.get(0).getKilos() - average, 2);
+
+                double value;
+                switch (currentOption) {
+                    case KILOS:
+                        value = sets.get(0).getKilos();
+                        break;
+                    case REPS:
+                        value = sets.get(0).getReps();
+                        break;
+                    default:
+                        value = 0;
+                }
+
+                return Math.pow(value - average, 2);
             }
 
             int middleIndex = sets.size() / 2;

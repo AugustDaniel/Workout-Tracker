@@ -14,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class StatisticsTabController implements Initializable {
@@ -61,9 +62,11 @@ public class StatisticsTabController implements Initializable {
     }
 
     public void updateStatistics(Exercise exercise) {
-        statistics_variance_kilos_text.setText(String.valueOf(VarianceCalculator.getVariance(exercise)));
-        statistics_average_kilos_text.setText(String.valueOf(AverageCalculator.getAverageKilos(exercise)));
-        statistics_average_reps_text.setText(String.valueOf(AverageCalculator.getAverageReps(exercise)));
+        DecimalFormat df = new DecimalFormat("###.###");
+        statistics_variance_reps_text.setText(String.valueOf(df.format(VarianceCalculator.getVarianceReps(exercise))));
+        statistics_variance_kilos_text.setText(String.valueOf(df.format(VarianceCalculator.getVarianceKilos(exercise))));
+        statistics_average_kilos_text.setText(String.valueOf(df.format(AverageCalculator.getAverageKilos(exercise))));
+        statistics_average_reps_text.setText(String.valueOf(df.format(AverageCalculator.getAverageReps(exercise))));
         series.getData().clear();
         int i = 0;
         for (ExerciseSet set : exercise.getSets()) {
