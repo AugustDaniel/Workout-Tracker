@@ -2,6 +2,8 @@ package client;
 
 import data.Exercise;
 import data.ExerciseSet;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -54,5 +56,17 @@ public class StarterGuiController {
 
     public void initialize() {
         workoutstarter_exercises_list.getItems().setAll(Client.getActualWorkout().getExcercises());
+        workoutstarter_exercises_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Exercise>() {
+            @Override
+            public void changed(ObservableValue<? extends Exercise> observable, Exercise oldValue, Exercise newValue) {
+                if (newValue != null) {
+                    updateSetListView(newValue);
+                }
+            }
+        });
+    }
+
+    private void updateSetListView(Exercise exercise) {
+        workoutstarter_set_list.getItems().setAll(exercise.getSets());
     }
 }

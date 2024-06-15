@@ -6,7 +6,6 @@ import data.ExerciseSet;
 import data.Workout;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -32,17 +31,11 @@ public class StatisticsTabController implements Initializable {
     @FXML
     public Text statistics_variance_reps_text;
 
+    public XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("workout 1", 23));
-        series.getData().add(new XYChart.Data<>("workout 2", 14));
-        series.getData().add(new XYChart.Data<>("workout 3", 15));
-        series.getData().add(new XYChart.Data<>("workout 4", 24));
-        series.getData().add(new XYChart.Data<>("workout 5", 34));
-
-        statistics_workoutduration_graph.getData().add(series);
-        statistics_workoutduration_graph.setLegendVisible(false);
 
 
         statistics_exercises_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Exercise>() {
@@ -54,16 +47,34 @@ public class StatisticsTabController implements Initializable {
             }
         });
 
+
+
+
+        statistics_workoutduration_graph.getData().add(series);
+        statistics_workoutduration_graph.setLegendVisible(false);
+
         for (Workout workout:Client.getWorkouts()) {
             for (Exercise exercise: workout.getExcercises()) {
+
                 statistics_exercises_list.getItems().add(exercise);
+
             }
         }
-        System.out.println(statistics_exercises_list.getItems());
     }
 
     public void updateStatistics(Exercise exercise){
         statistics_average_kilos_text.setText(String.valueOf(exercise.getSets().get(0).getKilos()));
+        series.getData().clear();
+        int i = 0;
+        for (ExerciseSet set: exercise.getSets()) {
+            if(exercise.getSets()!=null){
+            series.getData().add(new XYChart.Data<>("set"+i, set.getKilos()));
+            i+=1;}
+            else {
+                series.getData().clear();
+            }
+        }
+
     }
 
 }

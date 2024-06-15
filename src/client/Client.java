@@ -46,7 +46,20 @@ public class Client extends Application {
         Workout workout = new Workout("testWorkout");
         Exercise exercise = new Exercise("ex1");
         exercise.addSet(new ExerciseSet(10,5));
+
+        Exercise exercise1 = new Exercise("ex1");
+        exercise1.addSet(new ExerciseSet(10,7.5));
+        exercise1.addSet(new ExerciseSet(11,10));
+        exercise1.addSet(new ExerciseSet(19,4));
+        exercise1.addSet(new ExerciseSet(22,3));
+        exercise1.addSet(new ExerciseSet(10, 5));
+        exercise1.addSet(new ExerciseSet(10,7.5));
+        exercise1.addSet(new ExerciseSet(11,10));
+        exercise1.addSet(new ExerciseSet(19,4));
+        exercise1.addSet(new ExerciseSet(22,3));
+        exercise1.addSet(new ExerciseSet(10, 5));
         workout.addExercise(exercise);
+        workout.addExercise(exercise1);
         workouts.add(workout);
 
         exercises.add(new Exercise("Exercise 1"));
