@@ -2,6 +2,7 @@ package client.browse;
 
 import client.Client;
 import client.SubMenu;
+import data.Exercise;
 import data.Workout;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,7 +33,7 @@ public class BrowseTabController {
     @FXML
     public TableColumn<WorkoutTableRow, String> browse_workouts_table_uploader_column;
     private Map<String, List<Workout>> workouts = new HashMap<>();
-    private ExecutorService thread = Executors.newSingleThreadExecutor();
+    private final ExecutorService thread = Executors.newSingleThreadExecutor();
 
     @FXML
     public void handleRefreshButton() {
@@ -59,16 +60,13 @@ public class BrowseTabController {
         if (workouts == null) {
             return;
         }
-
+        System.out.println(workouts);
         browse_workouts_table.getItems().clear();
 
         List<WorkoutTableRow> workoutTableRows = new ArrayList<>();
-        for (Map.Entry<String, List<Workout>> entry : workouts.entrySet()) {
-            String uploader = entry.getKey();
-            for (Workout workout : entry.getValue()) {
-                workoutTableRows.add(new WorkoutTableRow(workout, uploader));
-            }
-        }
+        workouts.forEach((uploader, value) -> {
+            value.forEach(w -> workoutTableRows.add(new WorkoutTableRow(w, uploader)));
+        });
 
         browse_workouts_table.getItems().setAll(workoutTableRows);
         browse_workouts_table_name_column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
@@ -88,7 +86,22 @@ public class BrowseTabController {
             return;
         }
 
-        Client.addWorkout(row.getWorkout());
+        Workout clickedWorkout = row.getWorkout();
+        Workout toBeAdded = new Workout(clickedWorkout.getName());
+        Set<Exercise> savedExercises = Client.getExercises();
+
+        clickedWorkout.getExercises().forEach(exercise -> {
+            if (savedExercises.stream().anyMatch(e -> e.equals(exercise))) {
+                savedExercises.stream()
+                        .filter(e -> e.equals(exercise))
+                        .findFirst()
+                        .ifPresent(toBeAdded::addExercises);
+            } else {
+                toBeAdded.addExercises(exercise);
+            }
+        });
+
+        Client.addWorkout(toBeAdded);
     }
 
     @FXML
@@ -118,6 +131,7 @@ public class BrowseTabController {
 
     private void goToScreen(String path) {
         try {
+            thread.shutdownNow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent newContent = loader.load();
             SubMenu menu = loader.getController();

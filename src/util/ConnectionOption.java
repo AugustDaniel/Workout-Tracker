@@ -1,6 +1,6 @@
 package util;
 
-public enum ConnectionOptions {
+public enum ConnectionOption {
     SEND_WORKOUT,
     RETRIEVE_WORKOUTS
 }

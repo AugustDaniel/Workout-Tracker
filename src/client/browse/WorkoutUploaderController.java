@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WorkoutUploaderController implements Initializable, SubMenu {
     @FXML
@@ -30,8 +32,8 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
     public Button workoutUploader_upload_button;
     @FXML
     public Button workoutUploader_back_button;
-
     private Parent root;
+    private final ExecutorService thread = Executors.newSingleThreadExecutor();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,6 +44,7 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
     public void handleBackButton(ActionEvent actionEvent) {
         try {
             Parent newContent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/browseTab.fxml")));
+            thread.shutdownNow();
             ((VBox) root).getChildren().setAll(newContent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,16 +63,17 @@ public class WorkoutUploaderController implements Initializable, SubMenu {
             return;
         }
 
-        System.out.println("thread is made");
-        new Thread(() -> {
+        thread.execute(() -> {
             try {
-                ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(workoutUploader_name_textfield.getText(), workoutUploader_workouts_list.getSelectionModel().getSelectedItem()));
+                Workout workout = workoutUploader_workouts_list.getSelectionModel().getSelectedItem();
+                String text = workoutUploader_name_textfield.getText();
+                ServerHandler.uploadWorkout(new AbstractMap.SimpleEntry<>(text, workout));
                 Platform.runLater(ServerHandler::showUploadSuccessful);
             } catch (IOException e) {
                 Platform.runLater(ServerHandler::showServerError);
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     @Override

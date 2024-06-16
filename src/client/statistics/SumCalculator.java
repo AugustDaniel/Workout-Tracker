@@ -16,6 +16,10 @@ public class SumCalculator {
         private final double[] list;
 
         public DoubleAdder(double[] list) {
+            if (list.length == 0) {
+                throw new IllegalArgumentException();
+            }
+
             this.list = list;
         }
 

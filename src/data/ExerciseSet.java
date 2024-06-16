@@ -21,6 +21,6 @@ public class ExerciseSet implements Serializable {
 
     @Override
     public String toString() {
-        return reps+"reps" +" "+ kilos+"kilos";
+        return " reps: " + reps + ",  kilos: " + kilos;
     }
 }

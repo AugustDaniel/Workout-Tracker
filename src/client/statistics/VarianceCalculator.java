@@ -13,7 +13,6 @@ public class VarianceCalculator {
     public enum Option {KILOS, REPS}
 
     private static double average;
-    private static final AtomicInteger amount = new AtomicInteger(0);
     private static Option currentOption;
 
     public static double getVarianceKilos(Exercise exercise) {
@@ -26,15 +25,18 @@ public class VarianceCalculator {
 
     private static synchronized double getVariance(Exercise exercise, Option option) {
         ForkJoinPool pool = new ForkJoinPool();
-        amount.set(0);
         currentOption = option;
 
         switch (currentOption) {
-            case KILOS: average = AverageCalculator.getAverageKilos(exercise); break;
-            case REPS: average = AverageCalculator.getAverageReps(exercise); break;
+            case KILOS:
+                average = AverageCalculator.getAverageKilos(exercise);
+                break;
+            case REPS:
+                average = AverageCalculator.getAverageReps(exercise);
+                break;
         }
 
-        return pool.invoke(new VarianceSetAdder(exercise.getSets())) / amount.get();
+        return pool.invoke(new VarianceSetAdder(exercise.getSets())) / exercise.getSets().size();
     }
 
     private static class VarianceSetAdder extends RecursiveTask<Double> {
@@ -42,14 +44,16 @@ public class VarianceCalculator {
         private final List<ExerciseSet> sets;
 
         public VarianceSetAdder(List<ExerciseSet> sets) {
+            if (sets.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+
             this.sets = sets;
         }
 
         @Override
         protected Double compute() {
             if (sets.size() == 1) {
-                amount.incrementAndGet();
-
                 double value;
                 switch (currentOption) {
                     case KILOS:
@@ -59,7 +63,7 @@ public class VarianceCalculator {
                         value = sets.get(0).getReps();
                         break;
                     default:
-                        value = 0;
+                        value = average;
                 }
 
                 return Math.pow(value - average, 2);

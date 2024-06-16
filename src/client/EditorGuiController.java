@@ -2,21 +2,11 @@ package client;
 
 import data.Exercise;
 import data.Workout;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class EditorGuiController {
 
@@ -31,54 +21,51 @@ public class EditorGuiController {
     @FXML
     private TextField workouteditor_addexercise_textfield;
 
-    public void handleAddButton(ActionEvent actionEvent) {
-        Client.getExercises().add(new Exercise(workouteditor_addexercise_textfield.getText()));
-        workouteditor_exercises_list.getItems().clear();
-        workouteditor_exercises_list.getItems().addAll(Client.getExercises());
-
+    public void handleAddButton() {
+        String inputText = workouteditor_addexercise_textfield.getText();
+        String regex = "^[a-zA-Z0-9\\s]+$"; //no special characters
+        if (inputText.matches(regex)) {
+            Client.getExercises().add(new Exercise(inputText));
+            workouteditor_exercises_list.getItems().clear();
+            workouteditor_exercises_list.getItems().addAll(Client.getExercises());
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Invalid exercise name", ButtonType.CLOSE);
+        }
     }
 
-    public void handleBackButton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workouteditor_back_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void handleBackButton() {
+        Client.goToScene("/fxml/main.fxml", (Stage) workouteditor_back_button.getScene().getWindow());
     }
 
 
     public void initialize() {
+        Client.getExercises().forEach(e -> workouteditor_exercises_list.getItems().add(e));
 
-        for (Exercise exercise : Client.getExercises()) {
-            workouteditor_exercises_list.getItems().add(exercise);
-        }
-        workouteditor_exercisesinworkout_list.getItems().addAll(Client.getActualWorkout().getExcercises());
+        workouteditor_exercisesinworkout_list.getItems().addAll(Client.getActualWorkout().getExercises());
         workouteditor_workoutname_textfield.setText(Client.getActualWorkout().getName());
     }
 
-    public void handleAddToButton(ActionEvent actionEvent) {
-        if (workouteditor_exercises_list.getSelectionModel().getSelectedItems() != null) {
-            workouteditor_exercisesinworkout_list.getItems().add(workouteditor_exercises_list.getSelectionModel().getSelectedItems().get(0));
+    public void handleAddToButton() {
+        if (workouteditor_exercises_list.getSelectionModel().getSelectedItem() != null) {
+            workouteditor_exercisesinworkout_list.getItems().add(workouteditor_exercises_list.getSelectionModel().getSelectedItem());
         }
     }
 
-    public void handleRemoveFromButton(ActionEvent actionEvent) {
-        if (workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItems() != null) {
+    public void handleRemoveFromButton() {
+        if (workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItem() != null) {
             workouteditor_exercisesinworkout_list.getItems().remove(workouteditor_exercisesinworkout_list.getSelectionModel().getSelectedItem());
         }
     }
 
-    public void handleSaveButton(ActionEvent actionEvent) {
+    public void handleSaveButton() {
         Workout actualWorkout = Client.getActualWorkout();
         actualWorkout.setName(workouteditor_workoutname_textfield.getText());
-        actualWorkout.setExcercises(workouteditor_exercisesinworkout_list.getItems());
-        Client.getWorkouts().remove(actualWorkout);
-        Client.getWorkouts().add(actualWorkout);
+
+        ArrayList<Exercise> exercises = new ArrayList<>(workouteditor_exercisesinworkout_list.getItems());
+        actualWorkout.setExercises(exercises);
+
+        Client.addWorkout(actualWorkout);
         Client.setActualWorkout(null);
+        handleBackButton();
     }
 }

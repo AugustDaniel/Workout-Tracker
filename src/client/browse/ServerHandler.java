@@ -3,9 +3,8 @@ package client.browse;
 import data.Workout;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import util.ConnectionOptions;
+import util.ConnectionOption;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,7 +13,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 
-public class ServerHandler {
+public final class ServerHandler {
 
     private static final String IP_ADDR = "localhost";
     private static final int PORT = 8000;
@@ -28,7 +27,7 @@ public class ServerHandler {
     private static void connect() throws IOException {
         try {
             socket = new Socket();
-            socket.connect(new InetSocketAddress(IP_ADDR, PORT), 1000);
+            socket.connect(new InetSocketAddress(IP_ADDR, PORT), 2000);
             input = new ObjectInputStream(socket.getInputStream());
             output = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
@@ -39,9 +38,10 @@ public class ServerHandler {
 
     private static void disconnect() {
         try {
-            socket.close();
-            if (input != null) input.close();
-            if (output != null) output.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+            socket = null;
+            input = null;
+            output = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,9 +52,9 @@ public class ServerHandler {
 
         try {
             return input.readObject();
-        } catch (IOException e) {
-            connect();
-            return input.readObject();
+        } catch (Exception e) {
+            disconnect();
+            throw e;
         }
     }
 
@@ -64,10 +64,9 @@ public class ServerHandler {
         try {
             output.writeObject(o);
             output.flush();
-        } catch (IOException e) {
-            connect();
-            output.writeObject(o);
-            output.flush();
+        } catch (Exception e) {
+            disconnect();
+            throw e;
         }
     }
 
@@ -78,16 +77,16 @@ public class ServerHandler {
     }
 
     public static void uploadWorkout(Map.Entry<String, Workout> workout) throws IOException {
-        writeObject(ConnectionOptions.SEND_WORKOUT);
+        writeObject(ConnectionOption.SEND_WORKOUT);
         writeObject(workout);
     }
 
     public static Map<String, List<Workout>> getServerWorkouts() throws IOException, ClassNotFoundException {
-        writeObject(ConnectionOptions.RETRIEVE_WORKOUTS);
+        writeObject(ConnectionOption.RETRIEVE_WORKOUTS);
         return (Map<String, List<Workout>>) readObject();
     }
 
-    public static void showConnectionError() { //todo maybe srp
+    public static void showConnectionError() {
         new Alert(Alert.AlertType.ERROR, "Connection error", ButtonType.OK).showAndWait();
     }
 

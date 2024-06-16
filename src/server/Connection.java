@@ -1,15 +1,13 @@
 package server;
 
 
-import client.browse.ServerHandler;
 import data.Workout;
-import util.ConnectionOptions;
+import util.ConnectionOption;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 import java.util.Map;
 
 public class Connection implements Runnable {
@@ -26,7 +24,7 @@ public class Connection implements Runnable {
             this.input = new ObjectInputStream(this.client.getInputStream());
             output.flush();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             terminateConnection();
         }
     }
@@ -35,7 +33,7 @@ public class Connection implements Runnable {
     public void run() {
         while (true) {
             try {
-                ConnectionOptions option = (ConnectionOptions) input.readObject();
+                ConnectionOption option = (ConnectionOption) input.readObject();
                 System.out.println("Retrieved " + option.toString());
                 switch (option) {
                     case SEND_WORKOUT:
@@ -45,7 +43,7 @@ public class Connection implements Runnable {
                         sendWorkoutsToClient();
                         break;
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 terminateConnection();
                 break;
@@ -53,6 +51,11 @@ public class Connection implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void writeObject(Object object) throws IOException, NullPointerException {
+        output.writeObject(object);
+        output.flush();
     }
 
     private void receiveWorkoutFromClient() throws IOException, ClassNotFoundException {
@@ -66,18 +69,18 @@ public class Connection implements Runnable {
         System.out.println("Workout added");
     }
 
-    private void sendWorkoutsToClient() throws IOException {
-        output.writeObject(Server.getWorkouts());
-        output.flush();
+    private void sendWorkoutsToClient() throws IOException, NullPointerException {
+        writeObject(Server.getWorkouts());
         System.out.println("Workouts sent");
     }
 
 
     private void terminateConnection() {
         try {
-            if (input != null) input.close();
-            if (output != null) output.close();
             if (client != null && !client.isClosed()) client.close();
+            client = null;
+            input = null;
+            output = null;
         } catch (Exception e) {
             e.printStackTrace();
         }

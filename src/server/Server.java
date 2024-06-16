@@ -1,20 +1,21 @@
 package server;
 
 import data.Workout;
+import util.IOHelper;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Server {
     private static ServerSocket serverSocket;
-    private final static List<Connection> connections = new ArrayList<>();
-    private final static Map<String, List<Workout>> workouts = new LinkedHashMap<>();
+    private volatile static Map<String, List<Workout>> workouts = new LinkedHashMap<>();
+    private static final File workoutPath = new File("workouts_server");
 
     public static void main(String[] args) {
         try {
@@ -23,17 +24,22 @@ public class Server {
             e.printStackTrace();
         }
 
-        ExecutorService service = Executors.newCachedThreadPool();
-        addWorkout(new AbstractMap.SimpleEntry<>("testuploader", new Workout("testworkout")));
+        try {
+            workouts = (Map<String, List<Workout>>) IOHelper.readObject(workoutPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        while (!serverSocket.isClosed()) {
+        ExecutorService service = Executors.newCachedThreadPool();
+
+        while (true) {
             try {
                 Connection connection = new Connection(serverSocket.accept());
                 System.out.println("Connection accepted");
-                connections.add(connection);
                 service.execute(connection);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
@@ -44,10 +50,23 @@ public class Server {
         boolean workoutExists = workoutList.stream().anyMatch(workout -> workout.equals(entry.getValue()));
         if (!workoutExists) {
             workoutList.add(entry.getValue());
+
+            try {
+                IOHelper.saveObject(workouts, workoutPath);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public static Map<String, List<Workout>> getWorkouts() {
-        return new LinkedHashMap<>(workouts);
+        Map<String, List<Workout>> toSend = new LinkedHashMap<>();
+
+        workouts.forEach((k, v) -> {
+            List<Workout> workoutCopy = new ArrayList<>(v);
+            toSend.put(k, workoutCopy);
+        });
+
+        return toSend;
     }
 }

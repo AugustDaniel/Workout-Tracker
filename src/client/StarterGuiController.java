@@ -2,21 +2,13 @@ package client;
 
 import data.Exercise;
 import data.ExerciseSet;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class StarterGuiController {
     @FXML
@@ -29,44 +21,42 @@ public class StarterGuiController {
     private TextField workoutstarter_kilos_textfield;
     @FXML
     private ListView<ExerciseSet> workoutstarter_set_list;
-    public void handleBackButton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Scene scene = new Scene(root1);
-            Stage currentStage = (Stage) workoutstarter_back_button.getScene().getWindow();
-            currentStage.setScene(scene);
-            currentStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+    public void handleBackButton() {
+        Client.goToScene("/fxml/main.fxml", (Stage) workoutstarter_back_button.getScene().getWindow());
     }
 
-    public void handleAddButton(ActionEvent actionEvent) {
-        if (workoutstarter_exercises_list.getSelectionModel().getSelectedItems()!=null){
-            workoutstarter_exercises_list.getSelectionModel().getSelectedItems().get(0).addSet(new ExerciseSet(Integer.parseInt(workoutstarter_reps_textfield.getText()), Double.parseDouble(workoutstarter_kilos_textfield.getText())));
-            workoutstarter_set_list.getItems().setAll(workoutstarter_exercises_list.getSelectionModel().getSelectedItem().getSets());
+    public void handleAddButton() {
+        if (workoutstarter_exercises_list.getSelectionModel().getSelectedItem() == null
+                || workoutstarter_reps_textfield.getText() == null
+                || workoutstarter_kilos_textfield.getText() == null) {
+            return;
         }
 
+        ExerciseSet set = new ExerciseSet(Integer.parseInt(workoutstarter_reps_textfield.getText()), Double.parseDouble(workoutstarter_kilos_textfield.getText()));
+        workoutstarter_exercises_list.getSelectionModel().getSelectedItem().addSet(set);
+        workoutstarter_set_list.getItems().add(set);
     }
 
-    public void handleFinishButton(ActionEvent actionEvent) {
-        //todo
+    public void handleFinishButton() {
+        Client.finishWorkouts();
+        handleBackButton();
     }
 
     public void initialize() {
-        workoutstarter_exercises_list.getItems().setAll(Client.getActualWorkout().getExcercises());
-        workoutstarter_exercises_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Exercise>() {
-            @Override
-            public void changed(ObservableValue<? extends Exercise> observable, Exercise oldValue, Exercise newValue) {
-                if (newValue != null) {
-                    updateSetListView(newValue);
-                }
-            }
-        });
-    }
+        workoutstarter_exercises_list.getItems().setAll(Client.getActualWorkout().getExercises());
 
-    private void updateSetListView(Exercise exercise) {
-        workoutstarter_set_list.getItems().setAll(exercise.getSets());
+        workoutstarter_exercises_list.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+
+            if (newValue.getSets().isEmpty()) {
+                workoutstarter_set_list.getItems().clear();
+            }
+
+            workoutstarter_set_list.getItems().clear();
+            workoutstarter_set_list.getItems().addAll(newValue.getSets());
+        });
     }
 }

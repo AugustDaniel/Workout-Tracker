@@ -20,10 +20,4 @@ public final class IOHelper {
         input.close();
         return object;
     }
-
-    public static File getFileFromChooser(String message) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(message);
-        return fileChooser.showOpenDialog(new Stage());
-    }
 }

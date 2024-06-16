@@ -7,24 +7,24 @@ import java.util.List;
 public class Workout implements Serializable {
 
     private String name;
-    private List<Exercise> excercises;
+    private List<Exercise> exercises;
 
     public Workout(String name) {
         this.name = name;
-        this.excercises = new ArrayList<>();
+        this.exercises = new ArrayList<>();
     }
 
-    public void addExercise(Exercise exercise) {
-        excercises.add(exercise);
+    public void addExercises(Exercise exercise) {
+        exercises.add(exercise);
     }
 
-    public List<Exercise> getExcercises() {
-        return excercises;
+    public List<Exercise> getExercises() {
+        return exercises;
     }
 
     @Override
     public String toString() {
-        return name +" "+ excercises.size() +" exercises";
+        return name;
     }
 
     public String getName() {
@@ -35,7 +35,7 @@ public class Workout implements Serializable {
         this.name = name;
     }
 
-    public void setExcercises(List<Exercise> excercises) {
-        this.excercises = excercises;
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 }

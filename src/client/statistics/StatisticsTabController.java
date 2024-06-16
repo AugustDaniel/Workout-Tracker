@@ -2,10 +2,6 @@ package client.statistics;
 
 import client.Client;
 import data.Exercise;
-import data.ExerciseSet;
-import data.Workout;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -16,6 +12,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StatisticsTabController implements Initializable {
 
@@ -37,47 +34,44 @@ public class StatisticsTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
-        statistics_exercises_list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Exercise>() {
-            @Override
-            public void changed(ObservableValue<? extends Exercise> observable, Exercise oldValue, Exercise newValue) {
-                if (newValue != null) {
-                    updateStatistics(newValue);
-                }
+        statistics_exercises_list.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
             }
+
+            updateStatistics(newValue);
         });
 
 
         statistics_workoutduration_graph.getData().add(series);
         statistics_workoutduration_graph.setLegendVisible(false);
-
-        for (Workout workout : Client.getWorkouts()) {
-            for (Exercise exercise : workout.getExcercises()) {
-
-                statistics_exercises_list.getItems().add(exercise);
-
-            }
-        }
+        statistics_exercises_list.getItems().addAll(Client.getExercises());
     }
 
     public void updateStatistics(Exercise exercise) {
+        if (exercise.getSets().isEmpty()) {
+            statistics_variance_reps_text.setText("");
+            statistics_variance_kilos_text.setText("");
+            statistics_average_kilos_text.setText("");
+            statistics_average_reps_text.setText("");
+            series.getData().clear();
+            return;
+        }
+
         DecimalFormat df = new DecimalFormat("###.###");
         statistics_variance_reps_text.setText(String.valueOf(df.format(VarianceCalculator.getVarianceReps(exercise))));
         statistics_variance_kilos_text.setText(String.valueOf(df.format(VarianceCalculator.getVarianceKilos(exercise))));
         statistics_average_kilos_text.setText(String.valueOf(df.format(AverageCalculator.getAverageKilos(exercise))));
         statistics_average_reps_text.setText(String.valueOf(df.format(AverageCalculator.getAverageReps(exercise))));
         series.getData().clear();
-        int i = 0;
-        for (ExerciseSet set : exercise.getSets()) {
+
+        AtomicInteger i = new AtomicInteger();
+        exercise.getSets().forEach(set -> {
             if (!exercise.getSets().isEmpty()) {
                 series.getData().add(new XYChart.Data<>("set" + i, set.getKilos()));
-                i += 1;
-            } else {
-                series.getData().clear();
+                i.addAndGet(1);
             }
-        }
-
+        });
     }
 
 }

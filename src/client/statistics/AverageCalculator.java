@@ -3,48 +3,31 @@ package client.statistics;
 import data.Exercise;
 import data.ExerciseSet;
 
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AverageCalculator {
-    static double[] kilos;
-    static double[] reps;
-    static int amountKilos;
-    static int amountReps;
+    private static double[] kilos;
+    private static double[] reps;
 
+    private static void setup(Exercise exercise) {
+        kilos = new double[exercise.getSets().size()];
+        reps = new double[exercise.getSets().size()];
 
-    public static double getAverage(Exercise exercise) {
-        amountKilos = 0;
-        amountReps = 0;
-
-        for (ExerciseSet exerciseSet : exercise.getSets()) {
-            amountKilos += 1;
-            amountReps += 1;
-        }
-
-        kilos = new double[amountKilos];
-        amountKilos = 0;
-
-        reps = new double[amountReps];
-        amountReps = 0;
-
-        for (ExerciseSet exerciseSet : exercise.getSets()) {
-            kilos[amountKilos] = exerciseSet.getKilos();
-            amountKilos+=1;
-
-            reps[amountReps]=exerciseSet.getReps();
-            amountReps+=1;
-        }
-
-        return SumCalculator.sum(kilos)/(kilos.length);
+        AtomicInteger counter = new AtomicInteger();
+        exercise.getSets().forEach(exerciseSet -> {
+            kilos[counter.get()] = exerciseSet.getKilos();
+            reps[counter.get()] = exerciseSet.getReps();
+            counter.getAndIncrement();
+        });
     }
 
-    public static double getAverageReps(Exercise exercise){
-        getAverage(exercise);
-        return SumCalculator.sum(reps)/amountReps;
+    public static double getAverageReps(Exercise exercise) {
+        setup(exercise);
+        return SumCalculator.sum(reps) / exercise.getSets().size();
     }
 
-    public static double getAverageKilos(Exercise exercise){
-        getAverage(exercise);
-        return SumCalculator.sum(kilos)/amountKilos;
+    public static double getAverageKilos(Exercise exercise) {
+        setup(exercise);
+        return SumCalculator.sum(kilos) / exercise.getSets().size();
     }
-
 }
