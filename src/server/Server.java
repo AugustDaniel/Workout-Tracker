@@ -16,18 +16,23 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Server {
     private static ServerSocket serverSocket;
-    private volatile static Map<String, List<Workout>> workouts = new ConcurrentHashMap<>();
     private static final File workoutPath = new File("workouts_server");
+    private static final Map<String, List<Workout>> workouts;
 
-    public static void main(String[] args) {
+    static {
+        Map<String, List<Workout>> tempWorkouts = new ConcurrentHashMap<>();
         try {
-            serverSocket = new ServerSocket(8000);
+            tempWorkouts = (Map<String, List<Workout>>) IOHelper.readObject(workoutPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        workouts = tempWorkouts;
+    }
+
+    public static void main(String[] args) {
         try {
-            workouts = (Map<String, List<Workout>>) IOHelper.readObject(workoutPath);
+            serverSocket = new ServerSocket(8000);
         } catch (Exception e) {
             e.printStackTrace();
         }
