@@ -54,6 +54,7 @@ public class Connection implements Runnable {
     }
 
     private void writeObject(Object object) throws IOException, NullPointerException {
+        output.reset();
         output.writeObject(object);
         output.flush();
     }

@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,18 +16,23 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Server {
     private static ServerSocket serverSocket;
-    private volatile static Map<String, List<Workout>> workouts = new LinkedHashMap<>();
     private static final File workoutPath = new File("workouts_server");
+    private static final Map<String, List<Workout>> workouts;
 
-    public static void main(String[] args) {
+    static {
+        Map<String, List<Workout>> tempWorkouts = new ConcurrentHashMap<>();
         try {
-            serverSocket = new ServerSocket(8000);
+            tempWorkouts = (Map<String, List<Workout>>) IOHelper.readObject(workoutPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        workouts = tempWorkouts;
+    }
+
+    public static void main(String[] args) {
         try {
-            workouts = (Map<String, List<Workout>>) IOHelper.readObject(workoutPath);
+            serverSocket = new ServerSocket(8000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,29 +51,25 @@ public class Server {
         }
     }
 
-    public static synchronized void addWorkout(Map.Entry<String, Workout> entry) {
-        List<Workout> workoutList = workouts.computeIfAbsent(entry.getKey(), k -> new ArrayList<>());
+    public static void addWorkout(Map.Entry<String, Workout> entry) {
+        workouts.merge(entry.getKey(),
+                new CopyOnWriteArrayList<>(Collections.singletonList(entry.getValue())),
+                (existingList, newListUnused) -> {
+                    if (!existingList.contains(entry.getValue())) {
+                        existingList.add(entry.getValue());
 
-        boolean workoutExists = workoutList.stream().anyMatch(workout -> workout.equals(entry.getValue()));
-        if (!workoutExists) {
-            workoutList.add(entry.getValue());
+                        try {
+                            IOHelper.saveObject(workouts, workoutPath);
+                        } catch (Exception e) {
+                            System.out.println("something went wrong");
+                        }
+                    }
 
-            try {
-                IOHelper.saveObject(workouts, workoutPath);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+                    return existingList;
+                });
     }
 
     public static Map<String, List<Workout>> getWorkouts() {
-        Map<String, List<Workout>> toSend = new LinkedHashMap<>();
-
-        workouts.forEach((k, v) -> {
-            List<Workout> workoutCopy = new ArrayList<>(v);
-            toSend.put(k, workoutCopy);
-        });
-
-        return toSend;
+        return new HashMap<>(workouts);
     }
 }
