@@ -4,8 +4,6 @@ import data.Workout;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
 
 public class ServerTest {
 
