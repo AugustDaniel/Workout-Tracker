@@ -6,6 +6,7 @@ import util.IOHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -71,5 +72,9 @@ public class Server {
 
     public static Map<String, List<Workout>> getWorkouts() {
         return new HashMap<>(workouts);
+    }
+
+    public static void clearWorkouts() {
+        workouts.clear();
     }
 }
