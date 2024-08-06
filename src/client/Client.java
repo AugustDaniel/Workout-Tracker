@@ -77,6 +77,10 @@ public class Client extends Application {
         return workouts;
     }
 
+    public static void clearWorkouts() {
+        workouts.clear();
+    }
+
     public static Set<Exercise> getExercises() {
         return exercises;
     }
