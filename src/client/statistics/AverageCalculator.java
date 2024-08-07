@@ -1,7 +1,6 @@
 package client.statistics;
 
 import data.Exercise;
-import data.ExerciseSet;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
